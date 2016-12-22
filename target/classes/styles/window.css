@@ -1,0 +1,218 @@
+@font-face {
+	src: url("LinBiolinum_RBah.ttf");
+}
+
+@font-face {
+	src: url("LinBiolinum_Rah.ttf");
+}
+
+@font-face {
+	src: url("Share-Bold.ttf");
+}
+
+@font-face {
+	src: url("Share-Regular.ttf");
+}
+
+VBox, HBox, ScrollPane, Button,
+MewMenu, MewMenuGroup, ListView {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0px;
+    -fx-background-insets: 0, 0, 0, 0;
+    -fx-border-radius: 0;
+    -fx-border-width: 0px 0 0 0px;
+    -fx-border-insets: 0;
+    -fx-padding: 0;
+}
+
+Scene, Stage {
+    -fx-background-color: #fff;
+    -fx-background-radius: 0px;
+    -fx-background-insets: 0, 0, 0, 0;
+    -fx-border-radius: 0;
+    -fx-border-width: 0px 0 0 0px;
+    -fx-border-insets: 0;
+    -fx-padding: 0;
+}
+
+
+TopPanelButton, TopPanelMenuButton {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0px;
+    -fx-background-insets: 0, 0, 0, 0;
+    -fx-border-radius: 0;
+    -fx-border-width: 0px 0 0 0px;
+    -fx-border-insets: 0;
+    -fx-padding: 0;
+}
+
+Label, 
+MewMenuItem {
+    -fx-font-size: 12px;
+    -fx-text-fill: #000;
+    -fx-background-radius: 0px;
+    -fx-background-insets: 0, 0, 0, 0;
+    -fx-border-radius: 0;    
+    -fx-border-insets: 0;
+    -fx-pref-width: 9999px;
+    -fx-max-width: 9999px;
+    -fx-min-width: 1px;
+}
+
+TextField,
+NumericTextField {
+    -fx-background-radius: 0px;
+    -fx-background-insets: 0, 0, 0, 0;
+    -fx-border-radius: 0px;
+    -fx-border-width: 0px;
+    -fx-border-insets: 0;
+    -fx-padding: 0 11px 0 11px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #fff;
+    -fx-font-weight:bold;
+    -fx-font-family: "Linux Biolinum Bold";
+    -fx-background-color: #444;
+}
+
+Paginator NumericTextField {
+    -fx-border-width: 2px;
+    -fx-border-color: #000;
+    -fx-min-width: 96px;
+    -fx-font-size: 12px;
+}
+
+Tooltip {
+    -fx-background-radius: 0px;
+    -fx-background-insets: 0, 0, 0, 0;
+    -fx-border-radius: 0;
+    -fx-border-width: 1px;
+    -fx-border-insets: 0;
+    -fx-padding: 0;
+    -fx-background-color: #FFF;
+    -fx-border-color: #000;
+    -fx-font-size: 14px;
+    -fx-text-fill: #fff;
+    -fx-font-weight:bold;
+    -fx-font-family: "Linux Biolinum Bold";
+}
+
+.controlsBadInput {
+    -fx-text-fill: #F77;
+}
+
+.controlsGoodInput {
+    -fx-text-fill: #7F7;
+}
+
+.maxHeight {
+    -fx-pref-height: 9999px;
+    -fx-max-height: 9999px;
+    -fx-min-height: 1px;
+}
+
+.maxWidth {
+    -fx-pref-width: 9999px;
+    -fx-max-width: 9999px;
+    -fx-min-width: 1px;
+}
+
+.StringFieldElementRoot {
+    -fx-pref-height: 64px;
+    -fx-min-height: 64px;
+    -fx-max-height: 64px;
+    -fx-background-color: #eee;
+    -fx-border-width: 0px;
+    -fx-padding: 4px 8px 4px 8px;
+}
+
+.StringFieldElementLabel {
+    -fx-font-family: "Linux Biolinum";
+    -fx-font-size: 14px;
+    -fx-text-fill: #555;
+    -fx-pref-height: 18px;
+    -fx-min-height: 18px;
+    -fx-max-height: 18px;
+    -fx-background-color: transparent;
+    -fx-border-width: 0px;
+}
+
+.StringFieldElementText {
+    -fx-font-family: "Linux Biolinum";
+    -fx-font-size: 16px;
+    -fx-text-fill: #000;
+    -fx-pref-height: 30px;
+    -fx-min-height: 30px;
+    -fx-max-height: 30px;
+    -fx-background-color: #fff;
+    -fx-border-width: 0px 1px 1px 0;
+    -fx-border-color: #eee;
+}
+
+.ScrollPane, .ScrollPane:focused, .ScrollPane .corner,  .ScrollPane .viewport {
+    -fx-background-color: #fff;
+    -fx-background-radius: 0px;
+    -fx-background-insets: 0, 0, 0, 0;
+    -fx-border-radius: 0;
+    -fx-border-width: 0px 0 0 0px;
+    -fx-border-insets: 0;
+    -fx-padding: 0;
+}
+
+.ScrollPane, .ScrollPane:focused {
+    -fx-border-width: 0 0px 0 0px;
+    -fx-border-color:#ddd;
+}
+
+.ScrollPane .scroll-bar:horizontal .track,
+.ScrollPane .scroll-bar:vertical .track {
+    -fx-background-color:#fff;
+    -fx-border-color:#fff;
+    -fx-background-radius: 0em;
+    -fx-border-radius:0em;
+}
+
+.ScrollPane .scroll-bar:horizontal .increment-button ,
+.ScrollPane .scroll-bar:horizontal .decrement-button {
+    -fx-background-color:#fff;
+    -fx-background-radius: 0;
+    -fx-padding:0 0 10 0;
+}
+
+.ScrollPane .scroll-bar:vertical .increment-button ,
+.ScrollPane .scroll-bar:vertical .decrement-button {
+    -fx-background-color:#fff;
+    -fx-background-radius: 0;
+    -fx-padding:0 10 0 0;
+}
+
+.ScrollPane  .scroll-bar .increment-arrow,
+.ScrollPane  .scroll-bar .decrement-arrow {
+    -fx-shape: " ";	
+    -fx-padding:0;
+}
+
+.ScrollPane .scroll-bar:horizontal .thumb,
+.ScrollPane .scroll-bar:vertical .thumb {
+    -fx-background-color:#f77;
+    -fx-background-insets: 0;/* 2 2 2 2, 0, 0;*/
+    -fx-background-radius: 0;
+}
+
+.ScrollPane .scroll-bar:vertical {
+    -fx-unit-increment: 50 ;
+    -fx-block-increment: 250 ;
+}
+
+.ScrollPane .scroll-bar:horizontal {
+    -fx-unit-increment: 5 ;
+    -fx-block-increment: 20 ;
+}
+
+
+
+
+
+
+
+
+
