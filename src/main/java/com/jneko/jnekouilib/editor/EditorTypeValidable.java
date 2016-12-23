@@ -1,4 +1,4 @@
-package com.jneko.jnekouilib.elements;
+package com.jneko.jnekouilib.editor;
 
 public interface EditorTypeValidable {
     public void setValid(boolean v);

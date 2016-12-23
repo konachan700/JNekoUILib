@@ -1,4 +1,4 @@
-package com.jneko.jnekouilib.elements;
+package com.jneko.jnekouilib.editor;
 
 public interface EditorTypeNumber {
     public void setXNumberBorderValues(long min, long max);

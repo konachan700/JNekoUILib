@@ -7,11 +7,11 @@ import java.lang.annotation.Target;
 
 @Target(value=ElementType.METHOD)
 @Retention(value= RetentionPolicy.RUNTIME)
-public @interface UILongField {
+public @interface UITextArea {
     public String name();
     public UIFieldType type();
     public int readOnly() default 0;
-    public long minVal() default Long.MIN_VALUE;
-    public long maxVal() default Long.MAX_VALUE;
+    public int maxChars() default (16 * 1024);
+    public String helpText() default "";
     public String labelText() default "";
 }

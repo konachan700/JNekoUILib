@@ -1,12 +1,20 @@
-package com.jneko.jnekouilib.elements;
+package com.jneko.jnekouilib.editor;
 
+import com.jneko.jnekouilib.anno.UILongField;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
-public class EditorNumberSimpleElement extends VBox implements EditorTypeText, EditorTypeLabeled, EditorTypeNumber, EditorTypeValidable {
-    private boolean valid = false;
+public class ElementSimpleNumberField extends VBox implements EditorTypeText, EditorTypeLabeled, EditorTypeNumber, EditorTypeValidable, EditorFillable {
+    private boolean 
+            valid = false, 
+            readOnly = false;
+    
     private volatile long 
             value = 0,
             max = Long.MAX_VALUE,
@@ -18,8 +26,10 @@ public class EditorNumberSimpleElement extends VBox implements EditorTypeText, E
     private final Label
             title = new Label();
     
-    public EditorNumberSimpleElement() {
+    public ElementSimpleNumberField() {
         field.textProperty().addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
+            if (readOnly) return;
+            
             field.getStyleClass().remove(Editor.okStyle);
             field.getStyleClass().remove(Editor.errorStyle);
             try {
@@ -38,9 +48,9 @@ public class EditorNumberSimpleElement extends VBox implements EditorTypeText, E
             }
         });
         
-        super.getStyleClass().addAll("StringFieldElementRoot", "maxWidth");
-        title.getStyleClass().addAll("StringFieldElementLabel", "maxWidth");
-        field.getStyleClass().addAll("StringFieldElementText", "maxWidth");
+        super.getStyleClass().addAll("eStringFieldElementRoot", Editor.maxWidthStyle);
+        title.getStyleClass().addAll("eStringFieldElementLabel", Editor.maxWidthStyle);
+        field.getStyleClass().addAll("eStringFieldElementText", Editor.maxWidthStyle);
         
         super.getChildren().addAll(title, field);
     }
@@ -94,7 +104,11 @@ public class EditorNumberSimpleElement extends VBox implements EditorTypeText, E
 
     @Override
     public void setXTextReadOnly(boolean ro) {
+        readOnly = !ro;
         field.setEditable(ro);
+        
+        field.getStyleClass().removeAll("eStringFieldElementText", "eStringFieldElementText_RO");
+        field.getStyleClass().addAll((!ro) ? "eStringFieldElementText_RO" : "eStringFieldElementText");
     }
 
     @Override
@@ -106,5 +120,26 @@ public class EditorNumberSimpleElement extends VBox implements EditorTypeText, E
         field.getStyleClass().remove(Editor.okStyle);
         field.getStyleClass().remove(Editor.errorStyle);
         field.getStyleClass().add((v) ? Editor.okStyle : Editor.errorStyle);
+    }
+
+    @Override
+    public void fillFromObject(Object o, Method m) {
+        final String annoLabel = m.getAnnotation(UILongField.class).labelText();
+        if (annoLabel != null) 
+            setXLabelText(annoLabel);
+        
+        final int annoRO = m.getAnnotation(UILongField.class).readOnly();
+        setXTextReadOnly(annoRO == 0);
+        
+        setXNumberBorderValues(m.getAnnotation(UILongField.class).minVal(), m.getAnnotation(UILongField.class).maxVal());
+        
+        Long annoRetVal;
+        try {
+            annoRetVal = (Long) m.invoke(o);
+            if (annoRetVal != null) setXNumber(annoRetVal);
+
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            Logger.getLogger(Editor.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

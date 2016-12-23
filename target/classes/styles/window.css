@@ -116,16 +116,16 @@ Tooltip {
     -fx-min-width: 1px;
 }
 
-.StringFieldElementRoot {
-    -fx-pref-height: 64px;
+.eStringFieldElementRoot {
+/*    -fx-pref-height: 64px;
     -fx-min-height: 64px;
-    -fx-max-height: 64px;
+    -fx-max-height: 64px; */
     -fx-background-color: #eee;
     -fx-border-width: 0px;
-    -fx-padding: 4px 8px 4px 8px;
+    -fx-padding: 4px 8px 8px 8px;
 }
 
-.StringFieldElementLabel {
+.eStringFieldElementLabel {
     -fx-font-family: "Linux Biolinum";
     -fx-font-size: 14px;
     -fx-text-fill: #555;
@@ -136,7 +136,7 @@ Tooltip {
     -fx-border-width: 0px;
 }
 
-.StringFieldElementText {
+.eStringFieldElementText {
     -fx-font-family: "Linux Biolinum";
     -fx-font-size: 16px;
     -fx-text-fill: #000;
@@ -146,6 +146,17 @@ Tooltip {
     -fx-background-color: #fff;
     -fx-border-width: 0px 1px 1px 0;
     -fx-border-color: #eee;
+}
+
+.eStringFieldElementText_RO {
+    -fx-font-family: "Linux Biolinum";
+    -fx-font-size: 16px;
+    -fx-text-fill: #555;
+    -fx-pref-height: 30px;
+    -fx-min-height: 30px;
+    -fx-max-height: 30px;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
 }
 
 .ScrollPane, .ScrollPane:focused, .ScrollPane .corner,  .ScrollPane .viewport {
@@ -208,11 +219,85 @@ Tooltip {
     -fx-block-increment: 20 ;
 }
 
+.StringFieldElementTextArea, 
+.StringFieldElementTextArea:focused, 
+.StringFieldElementTextArea .corner,
+.StringFieldElementTextArea .viewport {
+	-fx-background-color: #fff;
+    -fx-background-radius: 0px;
+    -fx-background-insets: 0, 0, 0, 0;
+    -fx-border-radius: 0px;
+	-fx-border-width: 1px;
+    -fx-border-insets: 0;
+	-fx-padding: 0;
+	-fx-font-size: 12px;
+    -fx-text-fill: #333;
+	-fx-font-family: "Linux Biolinum Bold";
+	-fx-border-color: #aaa;
+}
 
 
+.StringFieldElementTextArea .scroll-bar:horizontal .track,
+.StringFieldElementTextArea .scroll-bar:vertical .track {
+    -fx-background-color:#fff;
+    -fx-border-color:#fff;
+    -fx-background-radius: 0em;
+    -fx-border-radius:0em;
+}
 
+.StringFieldElementTextArea .scroll-bar:horizontal .increment-button ,
+.StringFieldElementTextArea .scroll-bar:horizontal .decrement-button {
+    -fx-background-color:#fff;
+    -fx-background-radius: 0;
+    -fx-padding:0 0 10 0;
+}
 
+.StringFieldElementTextArea .scroll-bar:vertical .increment-button ,
+.StringFieldElementTextArea .scroll-bar:vertical .decrement-button {
+    -fx-background-color:#fff;
+    -fx-background-radius: 0;
+    -fx-padding:0 10 0 0;
+}
 
+.StringFieldElementTextArea  .scroll-bar .increment-arrow,
+.StringFieldElementTextArea  .scroll-bar .decrement-arrow {
+    -fx-shape: " ";	
+    -fx-padding:0;
+}
+
+.StringFieldElementTextArea .scroll-bar:horizontal .thumb,
+.StringFieldElementTextArea .scroll-bar:vertical .thumb {
+    -fx-background-color:#ccc;
+    -fx-background-insets: 0;/* 2 2 2 2, 0, 0;*/
+    -fx-background-radius: 0;
+}
+
+.StringFieldElementTextArea_height {
+	-fx-pref-height: 88px;
+	-fx-max-height: 88px;
+	-fx-min-height: 88px;
+}
+
+.checkBox {
+    -fx-font-family: "Linux Biolinum Bold";
+    -fx-font-size: 16px;
+    -fx-text-fill: #000;
+    -fx-padding: 8px 8px 8px 0;
+}
+
+.checkBox .box {
+    -fx-outer-border: #999;
+    -fx-body-color: #fff;
+    -fx-background-color: #fff;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 2px, 0px;
+}
+
+.checkBox .mark {
+    -fx-shape:"M14.596,2.055L12.455,0C9.687,2.884,6.011,6.714,5.158,7.602L2.055,4.624L0,6.765l5.242,5.037l0.003-0.004l0.003,0.004L14.596,2.055z";
+    -fx-scale-x: 1.25;
+    -fx-scale-y: 1.25;
+}
 
 
 

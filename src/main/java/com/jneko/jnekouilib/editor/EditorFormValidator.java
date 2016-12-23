@@ -1,4 +1,4 @@
-package com.jneko.jnekouilib.elements;
+package com.jneko.jnekouilib.editor;
 
 import javafx.scene.Parent;
 
