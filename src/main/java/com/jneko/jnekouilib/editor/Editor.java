@@ -10,7 +10,6 @@ import com.jneko.jnekouilib.anno.UITextArea;
 import com.jneko.jnekouilib.fragment.Fragment;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -189,6 +188,20 @@ public class Editor extends Fragment {
         }
     }
     
+    private void createSeparator() {
+        final VBox separator = new VBox();
+        separator.setMaxSize(9999, 8);
+        separator.setPrefSize(9999, 8);
+        separator.setMinSize(8, 8);
+        vContainer.getChildren().add(separator);
+    }
+    
+    private void createSeparatorHeader(String name) {
+        final Label sh = new Label(name);
+        sh.getStyleClass().addAll("StringFieldElementLabel", "maxWidth");
+        vContainer.getChildren().add(sh);
+    }
+    
     public void parseObject(Object obj) {
         vContainer.getChildren().clear();
         
@@ -216,6 +229,14 @@ public class Editor extends Fragment {
             if (m.isAnnotationPresent(UITextArea.class))        readObjectTextArea(obj, m);
             if (m.isAnnotationPresent(UILongField.class))       readObjectSimpleNumberField(obj, m);
             if (m.isAnnotationPresent(UIBooleanField.class))    readObjectCheckBox(obj, m);
+            
+            if (m.isAnnotationPresent(UISortIndex.class)) {
+                if (m.getAnnotation(UISortIndex.class).separatorPresent() == 1) {
+                    createSeparator();
+                    if (m.getAnnotation(UISortIndex.class).separatorName().length() > 0) 
+                        createSeparatorHeader(m.getAnnotation(UISortIndex.class).separatorName());
+                }
+            }
         }
     }
     

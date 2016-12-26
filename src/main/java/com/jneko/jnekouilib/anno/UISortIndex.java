@@ -9,4 +9,6 @@ import java.lang.annotation.Target;
 @Retention(value= RetentionPolicy.RUNTIME)
 public @interface UISortIndex {
     public long index() default 0;
+    public String separatorName() default "";
+    public int separatorPresent() default 0;
 }
