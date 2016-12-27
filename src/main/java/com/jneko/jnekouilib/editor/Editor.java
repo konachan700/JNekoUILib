@@ -1,6 +1,7 @@
 package com.jneko.jnekouilib.editor;
 
 import com.jneko.jnekouilib.anno.UIBooleanField;
+import com.jneko.jnekouilib.anno.UICollection;
 import com.jneko.jnekouilib.anno.UIFieldType;
 import com.jneko.jnekouilib.anno.UILibDataSource;
 import com.jneko.jnekouilib.anno.UILongField;
@@ -8,9 +9,12 @@ import com.jneko.jnekouilib.anno.UISortIndex;
 import com.jneko.jnekouilib.anno.UIStringField;
 import com.jneko.jnekouilib.anno.UITextArea;
 import com.jneko.jnekouilib.fragment.Fragment;
+import com.jneko.jnekouilib.fragment.FragmentList;
+import com.jneko.jnekouilib.fragment.FragmentListActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,15 +26,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
-public class Editor extends Fragment {
-    protected static final String 
+public class Editor extends Fragment implements FragmentListActionListener {
+    public static final String 
             okStyle         = "controlsGoodInput", 
             errorStyle      = "controlsBadInput",
             maxWidthStyle   = "maxWidth"
             ;
     
     private enum FieldType {
-        BOOLEAN_CHECK, STRING, LONG, STRING_MULTILINE
+        BOOLEAN_CHECK, STRING, LONG, STRING_MULTILINE, LIST
     }
     
     private class EditorMethods {
@@ -40,6 +44,9 @@ public class Editor extends Fragment {
         public Parent uiElementRef;
         public Object ref;
     }
+    
+    private final Map<String, Collection>
+            collectionHelpers = new HashMap<>();
     
     private final Map<String, EditorMethods>
             methodsMap = new HashMap<>();
@@ -87,6 +94,10 @@ public class Editor extends Fragment {
         if (customHeader != null) super.getChildren().add(customHeader);
         super.getChildren().add(elementsSP);
         if (customFooter != null) super.getChildren().add(customFooter);
+    }
+    
+    public void addCollectionHelper(String name, Collection collection) {
+        collectionHelpers.put(name, collection);
     }
     
     public void validateForm(EditorFormValidator efv) {
@@ -188,6 +199,51 @@ public class Editor extends Fragment {
         }
     }
     
+    @Override
+    public void OnListYesClick(Collection selectedItems) {
+        
+    }
+
+    @Override
+    public void OnListNoClick() {
+        
+    }
+    
+    private void openList(String name, Collection col) {
+        final FragmentList flist = new FragmentList(true, true);
+        flist.readCollection(col, collectionHelpers.get(name), this);
+        this.getHost().showFragment(flist, false);
+    }
+    
+    public void readObjectCollection(Object o, Method m) {
+        final String mName = m.getAnnotation(UICollection.class).name();
+        if (mName == null) return;
+        mmCreate(mName, o, m, FieldType.LIST);
+
+        if (m.getAnnotation(UICollection.class).type() == UIFieldType.SETTER) {
+            methodsMap.get(mName).setter = m;
+        } else if (m.getAnnotation(UICollection.class).type() == UIFieldType.GETTER) {
+            if (Collection.class.isAssignableFrom(m.getReturnType())) { 
+                methodsMap.get(mName).getter = m;
+
+                final ElementListLink elString = new ElementListLink();
+                elString.setXLabelText(m.getAnnotation(UICollection.class).text());
+                try {
+                    final Collection annoRetVal = (Collection) m.invoke(o);
+                    if (annoRetVal != null)
+                        elString.setOnMouseClicked(value -> {
+                            openList(mName, annoRetVal);
+                        });
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                    Logger.getLogger(Editor.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                vContainer.getChildren().add(elString);
+                methodsMap.get(mName).uiElementRef = elString;
+            }
+        }
+    }
+    
     private void createSeparator() {
         final VBox separator = new VBox();
         separator.setMaxSize(9999, 8);
@@ -201,8 +257,8 @@ public class Editor extends Fragment {
         sh.getStyleClass().addAll("StringFieldElementLabel", "maxWidth");
         vContainer.getChildren().add(sh);
     }
-    
-    public void parseObject(Object obj) {
+
+    public void readObject(Object obj) {
         vContainer.getChildren().clear();
         
         if (obj == null) return;
@@ -229,6 +285,8 @@ public class Editor extends Fragment {
             if (m.isAnnotationPresent(UITextArea.class))        readObjectTextArea(obj, m);
             if (m.isAnnotationPresent(UILongField.class))       readObjectSimpleNumberField(obj, m);
             if (m.isAnnotationPresent(UIBooleanField.class))    readObjectCheckBox(obj, m);
+            
+            if (m.isAnnotationPresent(UICollection.class))      readObjectCollection(obj, m);
             
             if (m.isAnnotationPresent(UISortIndex.class)) {
                 if (m.getAnnotation(UISortIndex.class).separatorPresent() == 1) {

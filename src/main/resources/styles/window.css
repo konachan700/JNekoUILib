@@ -299,5 +299,96 @@ Tooltip {
     -fx-scale-y: 1.25;
 }
 
+.yesno_button {
+    -fx-background-color: #eee;
+    -fx-background-radius: 0px;
+    -fx-background-insets: 0, 0, 0, 0;
+    -fx-border-radius: 0;
+    -fx-border-width: 1px;
+    -fx-border-color: #aaa;
+    -fx-border-insets: 0;
+    -fx-padding: 0px;
+    -fx-font-size: 14px;
+    -fx-text-fill: #000;
+    -fx-font-family: "Linux Biolinum Bold";
+    -fx-font-weight:bold; 
+    -fx-pref-width: 125px;
+    -fx-max-width: 125px;
+    -fx-min-width: 125px;
+    -fx-pref-height: 24px;
+    -fx-max-height: 24px;
+    -fx-min-height: 24px;
+}
 
+.ynbox1 {
+    -fx-padding: 6px;
+}
 
+.yesno_button:hover {
+    -fx-background-color: #dfd;
+}
+
+.checkBoxList {
+    -fx-font-family: "Linux Biolinum Bold";
+    -fx-font-size: 14px;
+    -fx-text-fill: #000;
+    -fx-padding: 6px;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #eee;
+    -fx-pref-height: 32px;
+    -fx-max-height: 32px;
+    -fx-min-height: 32px;
+}
+
+.checkBoxList .box {
+    -fx-outer-border: #999;
+    -fx-body-color: #eee;
+    -fx-background-color: #eee;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 2px, 0px;
+}
+
+.checkBoxList .mark {
+    -fx-shape:"M14.596,2.055L12.455,0C9.687,2.884,6.011,6.714,5.158,7.602L2.055,4.624L0,6.765l5.242,5.037l0.003-0.004l0.003,0.004L14.596,2.055z";
+    -fx-scale-x: 1.25;
+    -fx-scale-y: 1.25;
+}
+
+.labelList {
+    -fx-font-family: "Linux Biolinum Bold";
+    -fx-font-size: 14px;
+    -fx-text-fill: #000;
+    -fx-padding: 6px;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #eee;
+    -fx-pref-height: 32px;
+    -fx-max-height: 32px;
+    -fx-min-height: 32px;
+}
+
+.labelListOnEditor {
+    -fx-font-family: "Linux Biolinum Bold";
+    -fx-font-size: 16px;
+    -fx-text-fill: #008;
+    -fx-padding: 0 0 4px 8px;
+    -fx-border-width: 0;
+    -fx-border-color: #aaa;
+    -fx-pref-height: 32px;
+    -fx-max-height: 32px;
+    -fx-min-height: 32px;
+    -fx-underline: true;
+    -fx-cursor: hand;
+}
+
+.labelListOnEditor:hover {
+    -fx-text-fill: #808;
+}
+
+.iconListOnEditor {
+    -fx-fill: #000;
+    -fx-icon-size: 32px;
+    -fx-pref-width: 32px;
+    -fx-max-width: 32px;
+    -fx-min-width: 32px;
+    -fx-icon-code: "Material Icons:E896";
+}

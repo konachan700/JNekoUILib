@@ -1,40 +1,42 @@
 package com.jneko.jnekouilib.fragment;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.Stack;
 import javafx.scene.layout.VBox;
 
 public class FragmentHost extends VBox {
-    private final Map<String, Fragment> 
-            fragmentTabs = new HashMap<>();
-        
+    private final Stack<Fragment> 
+            fragments = new Stack<>();
+    
+    private Fragment
+            currentFragment = null;
+    
     public FragmentHost() {
         super();
         super.getStylesheets().add("/styles/window.css");
         super.getStyleClass().addAll("maxHeight", "maxWidth");
     }
     
-    public Fragment addFragment(String name, Fragment f) {
-        fragmentTabs.put(name, f);
-        return f;
+    public void showFragment(Fragment f, boolean clearAll) {
+        if (clearAll)
+            fragments.clear();
+        
+        if (currentFragment != null)
+            fragments.push(currentFragment);
+        
+        currentFragment = f;
+        currentFragment.setHost(this);
+        
+        this.getChildren().clear();
+        this.getChildren().add(currentFragment);
     }
     
-    public Fragment removeFragment(String name) {
-        return fragmentTabs.remove(name);
-    }
-    
-    public Set<String> getFragmentsNames() {
-        return fragmentTabs.keySet();
-    }
-    
-    public Fragment getFragment(String name) {
-        return fragmentTabs.get(name);
-    }
-    
-    public void showFragmentTab(String name) {
-        if (!fragmentTabs.containsKey(name)) return;
-        super.getChildren().clear();
-        super.getChildren().add(fragmentTabs.get(name));
+    public void back() {
+        if (fragments.isEmpty())
+            return;
+        
+        currentFragment = fragments.pop();
+        
+        this.getChildren().clear();
+        this.getChildren().add(currentFragment);
     }
 }
