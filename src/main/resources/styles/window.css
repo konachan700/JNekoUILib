@@ -392,3 +392,66 @@ Tooltip {
     -fx-min-width: 32px;
     -fx-icon-code: "Material Icons:E896";
 }
+
+.eStringFieldElementSeparator1 {
+    -fx-font-family: "Linux Biolinum Bold";
+    -fx-font-size: 16px;
+    -fx-text-fill: #555;
+ /*   -fx-pref-height: 24px;
+    -fx-min-height: 24px;
+    -fx-max-height: 24px;*/
+    -fx-background-color: transparent;
+    -fx-border-color: #aaa;
+    -fx-border-width: 0px 0px 1px 0px;
+    -fx-padding: 4px 4px 4px 8px;
+}
+
+
+.FLI_bigIcon {
+    -fx-fill: #000;
+    -fx-icon-size: 48px;
+    -fx-pref-width: 48px;
+    -fx-max-width: 48px;
+    -fx-min-width: 48px;
+    -fx-icon-code: "Material Icons:E1BD";
+}
+
+.FLI_bigIconSelected {
+    -fx-fill: #F77;
+    -fx-icon-size: 48px;
+    -fx-pref-width: 48px;
+    -fx-max-width: 48px;
+    -fx-min-width: 48px;
+    -fx-icon-code: "Material Icons:E1BD";
+}
+
+.FLI_this {
+    -fx-padding: 6px;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #eee;
+    -fx-background-color: #fff;
+}
+
+.FLI_mainTitle, .FLI_subTitle{
+    -fx-text-fill: #000;
+    -fx-padding: 2px;
+}
+
+.FLI_mainTitle {
+    -fx-font-family: "Linux Biolinum Bold";
+    -fx-font-size: 16px;
+}
+
+.FLI_subTitle {
+    -fx-font-family: "Linux Biolinum";
+    -fx-font-size: 14px;
+}
+
+.FLI_textLine, .FLI_rightText {
+    -fx-text-fill: #777;
+    -fx-padding: 2px;
+    -fx-font-family: "Linux Biolinum";
+    -fx-font-size: 12px;
+}
+
+

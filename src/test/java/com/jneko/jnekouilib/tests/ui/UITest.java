@@ -1,0 +1,276 @@
+package com.jneko.jnekouilib.tests.ui;
+
+import com.jneko.jnekouilib.anno.UIBooleanField;
+import com.jneko.jnekouilib.anno.UICollection;
+import com.jneko.jnekouilib.anno.UIFieldType;
+import com.jneko.jnekouilib.anno.UILibDataSource;
+import com.jneko.jnekouilib.anno.UIListItem;
+import com.jneko.jnekouilib.anno.UIListItemHeader;
+import com.jneko.jnekouilib.anno.UIListItemRightText;
+import com.jneko.jnekouilib.anno.UIListItemSubtitle;
+import com.jneko.jnekouilib.anno.UIListItemTextLine;
+import com.jneko.jnekouilib.anno.UILongField;
+import com.jneko.jnekouilib.anno.UISortIndex;
+import com.jneko.jnekouilib.anno.UIStringField;
+import com.jneko.jnekouilib.anno.UITextArea;
+import com.jneko.jnekouilib.editor.Editor;
+import com.jneko.jnekouilib.fragment.FragmentHost;
+import com.jneko.jnekouilib.fragment.FragmentList;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
+import jiconfont.icons.GoogleMaterialDesignIcons;
+import jiconfont.javafx.IconFontFX;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Rule;
+import org.junit.Test;
+
+public class UITest {
+    @UIListItem
+    public class testUIItemTag {
+        private long id;
+        private String line;
+
+        public testUIItemTag(long id, String line) {
+            this.id = id;
+            this.line = line;
+        }
+        
+        public testUIItemTag() {
+            this((new Random()).nextInt(), "ListItem#"+(new Random()).nextInt());
+        }
+        
+        public long getId() {
+            return id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
+
+        @UIListItemHeader
+        public String getLine() {
+            return line;
+        }
+
+        public void setLine(String line) {
+            this.line = line;
+        }
+        
+        @UIListItemSubtitle
+        public String getSubtext() {
+            return "text text text text";
+        }
+        
+        @UIListItemTextLine
+        public String getTextLine() {
+            return "Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 26.061 sec";
+        }
+        
+        @UIListItemRightText
+        public String getRText() {
+            return "12345-01";
+        }
+    }
+    
+    @UILibDataSource
+    public class testUIItems {
+        private long id;
+        private long number;
+        private String line;
+        private String text;
+        private boolean bool;
+        private Set<testUIItemTag> ifaces;
+        private Set<testUIItemTag> ifacesOne;
+
+        @UISortIndex(index=0)
+        @UILongField(name="DBID", type=UIFieldType.GETTER, readOnly=1, labelText="Test ID")
+        public long getId() {
+            return id;
+        }
+        
+        @UILongField(name="DBID", type=UIFieldType.SETTER)
+        public void setId(long id) {
+            this.id = id;
+        }
+
+        @UISortIndex(index=9)
+        @UILongField(name="DBV", type=UIFieldType.GETTER, readOnly=0, labelText="Test value")
+        public long getNumber() {
+            return number;
+        }
+        
+        @UILongField(name="DBV", type=UIFieldType.SETTER)
+        public void setNumber(long number) {
+            this.number = number;
+        }
+
+        @UISortIndex(index=1)
+        @UIStringField(name="ModelName", type=UIFieldType.GETTER, readOnly=0, maxChars=64, helpText="Enter text here", labelText="Test name")
+        public String getLine() {
+            return line;
+        }
+
+        @UIStringField(name="ModelName", type=UIFieldType.SETTER)
+        public void setLine(String line) {
+            this.line = line;
+        }
+
+        @UISortIndex(index=2)
+        @UITextArea(name="ModelNote", type=UIFieldType.GETTER, readOnly=0, maxChars=2048, helpText="Enter text here", labelText="Test note")
+        public String getText() {
+            return text;
+        }
+
+        @UITextArea(name="ModelNote", type=UIFieldType.SETTER)
+        public void setText(String text) {
+            this.text = text;
+        }
+
+        @UISortIndex(index=6, separatorPresent=1)
+        @UIBooleanField(name="ModelOLD", type=UIFieldType.GETTER, readOnly=0, labelText="Test in production")
+        public boolean isBool() {
+            return bool;
+        }
+
+        @UIBooleanField(name="ModelOLD", type=UIFieldType.SETTER)
+        public void setBool(boolean bool) {
+            this.bool = bool;
+        }
+
+        @UISortIndex(index=4, separatorPresent=1, separatorName="Lists")
+        @UICollection(name="ifaces", type=UIFieldType.GETTER, multiSelect=1, yesNoBoxPresent=1, text="Select subtests")
+        public Set<testUIItemTag> getIfaces() {
+            return ifaces;
+        }
+
+        @UICollection(name="ifaces", type=UIFieldType.SETTER)
+        public void setIfaces(Set<testUIItemTag> ifaces) {
+            this.ifaces = ifaces;
+        }
+        
+        @UISortIndex(index=5)
+        @UICollection(name="ifacesOne", type=UIFieldType.GETTER, multiSelect=0, yesNoBoxPresent=1, text="Select one item from list")
+        public Set<testUIItemTag> getIfacesOne() {
+            return ifacesOne;
+        }
+
+        @UICollection(name="ifacesOne", type=UIFieldType.SETTER)
+        public void setIfacesOne(Set<testUIItemTag> ifaces) {
+            this.ifacesOne = ifaces;
+        }
+    }
+
+    @Rule 
+    public JavaFXThreadingRule javafxRule = new JavaFXThreadingRule();
+    
+    @Test
+    public void displaySimpleUI() {
+        IconFontFX.register(GoogleMaterialDesignIcons.getIconFont());
+        
+        final testUIItems t = new testUIItems();
+        
+        t.id = 1828356;
+        t.bool = true;
+        t.line = "Test string line";
+        t.text = "Test text block";
+        t.number = 36128;
+        
+        final ArrayList<testUIItemTag> al = new ArrayList<>();
+        al.add(new testUIItemTag());
+        al.add(new testUIItemTag());
+        al.add(new testUIItemTag());
+        al.add(new testUIItemTag());
+        al.add(new testUIItemTag());
+        al.add(new testUIItemTag());
+        al.add(new testUIItemTag());
+        al.add(new testUIItemTag());
+        al.add(new testUIItemTag());
+        
+        System.out.println("Collection all items count: "+al.size()); 
+        
+        t.ifaces = new HashSet<>();
+        t.ifaces.add(al.get(0));
+        t.ifaces.add(al.get(5));
+        t.ifaces.add(al.get(7));
+        
+        System.out.println("On-start preselected items count (MSL): "+ t.ifaces.size());
+        
+        t.ifacesOne = new HashSet<>();
+        t.ifacesOne.add(al.get(0));
+        t.ifacesOne.add(al.get(2));
+        
+        System.out.println("On-start preselected items count (SSL): "+ t.ifacesOne.size());
+        
+        final Stage s = new Stage();
+        final FragmentHost fh = new FragmentHost();
+        final Scene scene = new Scene(fh, 550, 500);
+        final Editor e = new Editor();
+        
+        e.addCollectionHelper("ifaces", al);
+        e.addCollectionHelper("ifacesOne", al);
+        e.readObject(t);
+        
+        fh.showFragment(e, true);
+        
+        s.setScene(scene);
+        s.setMinWidth(550);
+        s.setMinHeight(500);
+        s.setTitle("test 1");
+        
+        s.showAndWait();
+        e.saveObject();
+        
+        System.out.println("Selected items count on MSL: "+ t.ifaces.size());
+        System.out.println("Selected items count on SSL: "+ t.ifacesOne.size());
+        
+        final FragmentList<testUIItemTag> fl = new FragmentList<>(al);
+        fl.create();
+        fh.showFragment(fl, true);
+        
+        s.showAndWait();
+        
+        
+        final Alert alert = new Alert(AlertType.CONFIRMATION, "Are all elements displayed correctly?", ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
+        if (alert.getResult() != ButtonType.YES) 
+            Assert.assertTrue(false);
+        
+        Assert.assertTrue(true);
+    }
+    
+    @Test
+    public void isFXPresent() {
+        assert Platform.isFxApplicationThread();
+    }
+    
+    public UITest() {
+    }
+    
+    @BeforeClass
+    public static void setUpClass() {
+    }
+    
+    @AfterClass
+    public static void tearDownClass() {
+    }
+    
+    @Before
+    public void setUp() {
+    }
+    
+    @After
+    public void tearDown() {
+    }
+}

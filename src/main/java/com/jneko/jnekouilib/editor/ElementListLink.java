@@ -5,6 +5,9 @@ import javafx.scene.layout.HBox;
 import jiconfont.javafx.IconNode;
 
 public class ElementListLink extends HBox implements EditorTypeLabeled {
+    private EditorFragmentList
+            parentFL = null;
+    
     private final Label
             textLabel = new Label();
     
@@ -21,5 +24,13 @@ public class ElementListLink extends HBox implements EditorTypeLabeled {
     @Override
     public void setXLabelText(String text) {
         textLabel.setText(text);
+    }
+
+    public EditorFragmentList getParentFL() {
+        return parentFL;
+    }
+
+    public void setParentFL(EditorFragmentList parentFL) {
+        this.parentFL = parentFL;
     }
 }

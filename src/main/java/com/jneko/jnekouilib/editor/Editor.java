@@ -9,8 +9,6 @@ import com.jneko.jnekouilib.anno.UISortIndex;
 import com.jneko.jnekouilib.anno.UIStringField;
 import com.jneko.jnekouilib.anno.UITextArea;
 import com.jneko.jnekouilib.fragment.Fragment;
-import com.jneko.jnekouilib.fragment.FragmentList;
-import com.jneko.jnekouilib.fragment.FragmentListActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -26,7 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
-public class Editor extends Fragment implements FragmentListActionListener {
+public class Editor extends Fragment implements EditorFragmentListActionListener {
     public static final String 
             okStyle         = "controlsGoodInput", 
             errorStyle      = "controlsBadInput",
@@ -108,8 +106,7 @@ public class Editor extends Fragment implements FragmentListActionListener {
                 ((EditorTypeValidable) em.uiElementRef).setValid(efv.validateForm(em.ref, em.uiElementRef));
         });
     }
-    
-    
+
     private void mmCreate(String mName, Object o, Method m, FieldType ft) {
         if (!methodsMap.containsKey(mName)) {
             final EditorMethods mm = new EditorMethods();
@@ -179,7 +176,7 @@ public class Editor extends Fragment implements FragmentListActionListener {
         }
     }
     
-    public void readObjectCheckBox(Object o, Method m) {
+    private void readObjectCheckBox(Object o, Method m) {
         final String mName = m.getAnnotation(UIBooleanField.class).name();
         if (mName == null) return;
         mmCreate(mName, o, m, FieldType.BOOLEAN_CHECK);
@@ -199,23 +196,24 @@ public class Editor extends Fragment implements FragmentListActionListener {
         }
     }
     
-    @Override
-    public void OnListYesClick(Collection selectedItems) {
-        
-    }
+//    @Override
+//    public void OnListYesClick(Collection selectedItems) {
+//        
+//    }
 
     @Override
-    public void OnListNoClick() {
-        
+    public void OnListNoClick(EditorFragmentList fl) {
+        final Set<String> ml = methodsMap.keySet();
+        ml.forEach(element -> {
+            EditorMethods em = methodsMap.get(element);
+            if ((em.getter == null) || (em.setter == null)) return;
+            if (em.uiElementRef.equals(fl.getParentElement())) {
+                saveCollection(em);
+            }
+        });
     }
     
-    private void openList(String name, Collection col) {
-        final FragmentList flist = new FragmentList(true, true);
-        flist.readCollection(col, collectionHelpers.get(name), this);
-        this.getHost().showFragment(flist, false);
-    }
-    
-    public void readObjectCollection(Object o, Method m) {
+    private void readObjectCollection(Object o, Method m) {
         final String mName = m.getAnnotation(UICollection.class).name();
         if (mName == null) return;
         mmCreate(mName, o, m, FieldType.LIST);
@@ -227,12 +225,19 @@ public class Editor extends Fragment implements FragmentListActionListener {
                 methodsMap.get(mName).getter = m;
 
                 final ElementListLink elString = new ElementListLink();
+                final EditorFragmentList flist = new EditorFragmentList(
+                        m.getAnnotation(UICollection.class).multiSelect() == 1
+                );
+                elString.setParentFL(flist);
+                flist.setParentElement(elString);
+                
                 elString.setXLabelText(m.getAnnotation(UICollection.class).text());
                 try {
                     final Collection annoRetVal = (Collection) m.invoke(o);
+                    flist.readCollection(annoRetVal, collectionHelpers.get(mName), this);
                     if (annoRetVal != null)
                         elString.setOnMouseClicked(value -> {
-                            openList(mName, annoRetVal);
+                            this.getHost().showFragment(flist, false);
                         });
                 } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                     Logger.getLogger(Editor.class.getName()).log(Level.SEVERE, null, ex);
@@ -254,7 +259,7 @@ public class Editor extends Fragment implements FragmentListActionListener {
     
     private void createSeparatorHeader(String name) {
         final Label sh = new Label(name);
-        sh.getStyleClass().addAll("StringFieldElementLabel", "maxWidth");
+        sh.getStyleClass().addAll("eStringFieldElementSeparator1", "maxWidth");
         vContainer.getChildren().add(sh);
     }
 
@@ -281,13 +286,6 @@ public class Editor extends Fragment implements FragmentListActionListener {
         
         for (int i=0; i<mSorted.size(); i++) {
             final Method m = mSorted.get(i);
-            if (m.isAnnotationPresent(UIStringField.class))     readObjectTextField(obj, m);
-            if (m.isAnnotationPresent(UITextArea.class))        readObjectTextArea(obj, m);
-            if (m.isAnnotationPresent(UILongField.class))       readObjectSimpleNumberField(obj, m);
-            if (m.isAnnotationPresent(UIBooleanField.class))    readObjectCheckBox(obj, m);
-            
-            if (m.isAnnotationPresent(UICollection.class))      readObjectCollection(obj, m);
-            
             if (m.isAnnotationPresent(UISortIndex.class)) {
                 if (m.getAnnotation(UISortIndex.class).separatorPresent() == 1) {
                     createSeparator();
@@ -295,6 +293,13 @@ public class Editor extends Fragment implements FragmentListActionListener {
                         createSeparatorHeader(m.getAnnotation(UISortIndex.class).separatorName());
                 }
             }
+
+            if (m.isAnnotationPresent(UIStringField.class))     readObjectTextField(obj, m);
+            if (m.isAnnotationPresent(UITextArea.class))        readObjectTextArea(obj, m);
+            if (m.isAnnotationPresent(UILongField.class))       readObjectSimpleNumberField(obj, m);
+            if (m.isAnnotationPresent(UIBooleanField.class))    readObjectCheckBox(obj, m);
+            
+            if (m.isAnnotationPresent(UICollection.class))      readObjectCollection(obj, m);
         }
     }
     
@@ -342,6 +347,23 @@ public class Editor extends Fragment implements FragmentListActionListener {
         }
     }
     
+    private void saveCollection(EditorMethods em) {
+        if (! (em.uiElementRef instanceof ElementListLink)) return;
+        
+        final EditorFragmentList elList = ((ElementListLink) em.uiElementRef).getParentFL();
+        if (Collection.class.isAssignableFrom(em.getter.getReturnType())) { 
+            try {
+                final Collection annoRetVal = (Collection) em.getter.invoke(em.ref);
+                annoRetVal.clear();
+                elList.saveCollection((name, obj) -> {
+                    annoRetVal.add(obj);
+                });
+            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                Logger.getLogger(Editor.class.getName()).log(Level.SEVERE, null, ex);
+            } 
+        }
+    }
+    
     public void saveObject() {
         final Set<String> ml = methodsMap.keySet();
         ml.forEach(element -> {
@@ -361,6 +383,9 @@ public class Editor extends Fragment implements FragmentListActionListener {
                 case BOOLEAN_CHECK:
                     saveCheckBox(em);
                     break;   
+                case LIST:
+                    saveCollection(em);
+                    break;
             }
         });
     }
