@@ -1,5 +1,6 @@
 package com.jneko.jnekouilib.fragment;
 
+import com.jneko.jnekouilib.utils.MessageBus;
 import java.util.ArrayList;
 import java.util.Collection;
 import javafx.scene.control.ScrollPane;
@@ -18,7 +19,7 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
     private final VBox
             vContainer = new VBox();
     
-    public FragmentList(Collection<T> c) {
+    public FragmentList(Collection<T> c, String collectionRefName) {
         super();
         items = c;
         
@@ -32,9 +33,13 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
         elementsSP.setFitToHeight(false);
         
         super.getChildren().addAll(elementsSP);
+        
+        MessageBus.registerMessageReceiver(collectionRefName, "refresh", (event, pl) -> {
+            create();
+        });
     }
     
-    public void create() {
+    public final void create() {
         if (items == null) return;
         
         uiItems.clear();

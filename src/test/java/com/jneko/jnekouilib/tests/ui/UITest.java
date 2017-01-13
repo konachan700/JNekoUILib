@@ -13,21 +13,19 @@ import com.jneko.jnekouilib.anno.UILongField;
 import com.jneko.jnekouilib.anno.UISortIndex;
 import com.jneko.jnekouilib.anno.UIStringField;
 import com.jneko.jnekouilib.anno.UITextArea;
+import com.jneko.jnekouilib.appmenu.AppMenuGroup;
+import com.jneko.jnekouilib.appmenu.AppMenuItem;
 import com.jneko.jnekouilib.editor.Editor;
-import com.jneko.jnekouilib.fragment.FragmentHost;
 import com.jneko.jnekouilib.fragment.FragmentList;
+import com.jneko.jnekouilib.windows.UIDialog;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 import javafx.application.Platform;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.stage.Stage;
-import jiconfont.icons.GoogleMaterialDesignIcons;
-import jiconfont.javafx.IconFontFX;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -177,7 +175,7 @@ public class UITest {
     
     @Test
     public void displaySimpleUI() {
-        IconFontFX.register(GoogleMaterialDesignIcons.getIconFont());
+        //IconFontFX.register(GoogleMaterialDesignIcons.getIconFont());
         
         final testUIItems t = new testUIItems();
         
@@ -188,15 +186,8 @@ public class UITest {
         t.number = 36128;
         
         final ArrayList<testUIItemTag> al = new ArrayList<>();
-        al.add(new testUIItemTag());
-        al.add(new testUIItemTag());
-        al.add(new testUIItemTag());
-        al.add(new testUIItemTag());
-        al.add(new testUIItemTag());
-        al.add(new testUIItemTag());
-        al.add(new testUIItemTag());
-        al.add(new testUIItemTag());
-        al.add(new testUIItemTag());
+        for (int i=0; i<16; i++)
+            al.add(new testUIItemTag());
         
         System.out.println("Collection all items count: "+al.size()); 
         
@@ -212,35 +203,39 @@ public class UITest {
         t.ifacesOne.add(al.get(2));
         
         System.out.println("On-start preselected items count (SSL): "+ t.ifacesOne.size());
-        
-        final Stage s = new Stage();
-        final FragmentHost fh = new FragmentHost();
-        final Scene scene = new Scene(fh, 550, 500);
+
+        final UIDialog d = new UIDialog(800, 600, true, true, "Tests window");
         final Editor e = new Editor();
+        
+        final FragmentList<testUIItemTag> fl = new FragmentList<>(t.ifaces, "ifaces");
+        fl.create();
+        
+        d.addMenu(
+                new AppMenuGroup(
+                        "UI Tests", "menuHeaderBlack", "menuHeaderIcon",
+                        new AppMenuItem("Test Form", (c) -> {
+                            d.showFragment(e, true);
+                        }).defaultSelected(),
+                        new AppMenuItem("Test List", (c) -> {
+                            d.showFragment(fl, true);
+                        })
+                )
+        );
+        
+        d.addPanelButton("iconTest01", "test button", a -> {});
         
         e.addCollectionHelper("ifaces", al);
         e.addCollectionHelper("ifacesOne", al);
         e.readObject(t);
+                 
+        d.showFragment(e, true); 
         
-        fh.showFragment(e, true);
-        
-        s.setScene(scene);
-        s.setMinWidth(550);
-        s.setMinHeight(500);
-        s.setTitle("test 1");
-        
-        s.showAndWait();
+        d.showAndWait();
         e.saveObject();
         
         System.out.println("Selected items count on MSL: "+ t.ifaces.size());
         System.out.println("Selected items count on SSL: "+ t.ifacesOne.size());
-        
-        final FragmentList<testUIItemTag> fl = new FragmentList<>(al);
-        fl.create();
-        fh.showFragment(fl, true);
-        
-        s.showAndWait();
-        
+
         
         final Alert alert = new Alert(AlertType.CONFIRMATION, "Are all elements displayed correctly?", ButtonType.YES, ButtonType.NO);
         alert.showAndWait();

@@ -41,6 +41,7 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
         public FieldType fieldType;
         public Parent uiElementRef;
         public Object ref;
+        public String refName;
     }
     
     private final Map<String, Collection>
@@ -208,7 +209,7 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
             EditorMethods em = methodsMap.get(element);
             if ((em.getter == null) || (em.setter == null)) return;
             if (em.uiElementRef.equals(fl.getParentElement())) {
-                saveCollection(em);
+                saveCollection(em, element);
             }
         });
     }
@@ -303,7 +304,7 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
         }
     }
     
-    private void saveStringField(EditorMethods em) {    
+    private void saveStringField(EditorMethods em, String refName) {    
         if (! (em.uiElementRef instanceof ElementTextField)) return;
         
         final ElementTextField elString = (ElementTextField) em.uiElementRef;
@@ -314,7 +315,7 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
         }
     }
     
-    private void saveTextArea(EditorMethods em) {
+    private void saveTextArea(EditorMethods em, String refName) {
         if (! (em.uiElementRef instanceof ElementTextArea)) return;
         
         final ElementTextArea elString = (ElementTextArea) em.uiElementRef;
@@ -325,7 +326,7 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
         }
     }
     
-    private void saveSimpleNumberField(EditorMethods em) {
+    private void saveSimpleNumberField(EditorMethods em, String refName) {
         if (! (em.uiElementRef instanceof ElementSimpleNumberField)) return;
         
         final ElementSimpleNumberField elString = (ElementSimpleNumberField) em.uiElementRef;
@@ -336,7 +337,7 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
         }
     }
     
-    private void saveCheckBox(EditorMethods em) {
+    private void saveCheckBox(EditorMethods em, String refName) {
         if (! (em.uiElementRef instanceof ElementCheckBox)) return;
         
         final ElementCheckBox elString = (ElementCheckBox) em.uiElementRef;
@@ -347,7 +348,7 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
         }
     }
     
-    private void saveCollection(EditorMethods em) {
+    private void saveCollection(EditorMethods em, String refName) {
         if (! (em.uiElementRef instanceof ElementListLink)) return;
         
         final EditorFragmentList elList = ((ElementListLink) em.uiElementRef).getParentFL();
@@ -357,7 +358,7 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
                 annoRetVal.clear();
                 elList.saveCollection((name, obj) -> {
                     annoRetVal.add(obj);
-                });
+                }, refName);
             } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                 Logger.getLogger(Editor.class.getName()).log(Level.SEVERE, null, ex);
             } 
@@ -372,19 +373,19 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
             
             switch (em.fieldType) {
                 case STRING:
-                    saveStringField(em);
+                    saveStringField(em, element);
                     break;
                 case STRING_MULTILINE:
-                    saveTextArea(em);
+                    saveTextArea(em, element);
                     break;
                 case LONG:
-                    saveSimpleNumberField(em);
+                    saveSimpleNumberField(em, element);
                     break;
                 case BOOLEAN_CHECK:
-                    saveCheckBox(em);
+                    saveCheckBox(em, element);
                     break;   
                 case LIST:
-                    saveCollection(em);
+                    saveCollection(em, element);
                     break;
             }
         });

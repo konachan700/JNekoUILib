@@ -15,7 +15,7 @@
 }
 
 VBox, HBox, ScrollPane, Button,
-MewMenu, MewMenuGroup, ListView {
+AppMenu, AppMenuGroup, ListView {
     -fx-background-color: transparent;
     -fx-background-radius: 0px;
     -fx-background-insets: 0, 0, 0, 0;
@@ -36,7 +36,7 @@ Scene, Stage {
 }
 
 
-TopPanelButton, TopPanelMenuButton {
+PanelButton, PanelMenuButton {
     -fx-background-color: transparent;
     -fx-background-radius: 0px;
     -fx-background-insets: 0, 0, 0, 0;
@@ -47,7 +47,7 @@ TopPanelButton, TopPanelMenuButton {
 }
 
 Label, 
-MewMenuItem {
+AppMenuItem {
     -fx-font-size: 12px;
     -fx-text-fill: #000;
     -fx-background-radius: 0px;
@@ -396,12 +396,12 @@ Tooltip {
 .eStringFieldElementSeparator1 {
     -fx-font-family: "Linux Biolinum Bold";
     -fx-font-size: 16px;
-    -fx-text-fill: #555;
+    -fx-text-fill: #777;
  /*   -fx-pref-height: 24px;
     -fx-min-height: 24px;
     -fx-max-height: 24px;*/
     -fx-background-color: transparent;
-    -fx-border-color: #aaa;
+    -fx-border-color: #eee;
     -fx-border-width: 0px 0px 1px 0px;
     -fx-padding: 4px 4px 4px 8px;
 }
@@ -454,4 +454,116 @@ Tooltip {
     -fx-font-size: 12px;
 }
 
+.topPanel {
+    -fx-border-color: #eee;
+    -fx-border-width: 0px 0px 1px 0px;
+    -fx-padding: 4px;
+}
 
+.topPanelSeparator {
+    -fx-pref-width: 8px;
+    -fx-max-width:  8px;
+    -fx-min-width:  8px;
+}
+
+.topPanelButton {
+    -fx-pref-width: 48px;
+    -fx-max-width: 48px;
+    -fx-min-width: 48px;
+    -fx-pref-height: 48px;
+    -fx-min-height: 48px;
+    -fx-max-height: 48px;
+}
+
+.topPanelButtonIcon {
+    -fx-icon-size: 32px;
+    -fx-fill: #000;
+}
+
+.topPanelButtonIcon:hover {
+    -fx-fill: #b00;
+}
+
+.topPanelButtonMenuIcon {
+    -fx-icon-code: "Material Icons:E1DB";
+}
+
+.popupMenuRoot {
+    
+}
+
+.popupMenuItem {
+    
+}
+
+.popupMenuItemBold {
+    
+}
+
+.dialog_headerBox {
+    -fx-background-color: #fff;
+}
+
+.dialog_root {
+    -fx-background-color: #fff;
+}
+
+.windowMenu {
+    -fx-pref-width: 200px;
+    -fx-max-width:  200px;
+    -fx-min-width:  200px;
+     -fx-border-color: #eee;
+    -fx-border-width: 0px 1px 0px 0px;
+}
+
+.menuItem {  
+    -fx-font-family: "Share";
+    -fx-font-size: 14px;
+    -fx-padding: 5px 4px 5px 24px;
+    -fx-background-color: #FFF;
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+}
+
+.menuItem:hover {
+    -fx-background-color: #DDD;
+}
+
+.menuSelectedItem {
+    -fx-border-width: 0 0 0 8px;
+    -fx-border-color: #f77;
+    -fx-padding: 4px 4px 4px 16px;
+    -fx-font-weight:bold;
+}
+
+.menuSeparator {
+    -fx-pref-height: 8px;
+    -fx-min-height: 8px;
+    -fx-max-height: 8px;
+    -fx-background-color: #fff;
+}
+
+.menuHeader {
+    -fx-font-family: "Share";
+    -fx-padding: 4px 4px 4px 8px;
+    -fx-font-weight:bold; 
+    -fx-font-size: 16px;
+    -fx-text-fill: #b00;
+    -fx-pref-height: 32px;
+    -fx-min-height: 32px;
+    -fx-max-height: 32px;
+}
+
+.menuHeaderBlack {
+    -fx-background-color: #fff;
+}
+
+.menuHeaderIcon {
+    -fx-icon-size: 24px;
+    -fx-icon-code: "Material Icons:E8B8";
+    -fx-fill: #b00;
+}
+
+.iconTest01 {
+    -fx-icon-code: "Material Icons:E877";
+}
