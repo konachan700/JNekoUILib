@@ -1,5 +1,6 @@
 package com.jneko.jnekouilib.panel;
 
+import java.util.Collection;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
@@ -30,5 +31,13 @@ public class Panel extends HBox {
     
     public void addNodes(Node ... element) {
         this.getChildren().addAll(element);
+    }
+    
+    public void clear() {
+        this.getChildren().clear();
+    }
+    
+    public void setAll(Collection col) {
+        this.getChildren().setAll(col);
     }
 }

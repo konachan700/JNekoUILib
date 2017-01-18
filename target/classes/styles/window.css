@@ -428,8 +428,15 @@ Tooltip {
 .FLI_this {
     -fx-padding: 6px;
     -fx-border-width: 0 0 1px 0;
-    -fx-border-color: #eee;
-    -fx-background-color: #fff;
+    -fx-border-color: #ddd;
+    -fx-background-color: #eee;
+}
+
+.FLI_thisSelected {
+    -fx-padding: 6px;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #ddd;
+    -fx-background-color: #fdd;
 }
 
 .FLI_mainTitle, .FLI_subTitle{
@@ -566,4 +573,28 @@ Tooltip {
 
 .iconTest01 {
     -fx-icon-code: "Material Icons:E877";
+}
+
+.iconDeleteForList {
+    -fx-icon-code: "Material Icons:E92B";
+}
+
+.iconAddForList {
+    -fx-icon-code: "Material Icons:E148";
+}
+
+.iconEditForList {
+    -fx-icon-code: "Material Icons:E150";
+}
+
+.iconBackForList {
+    -fx-icon-code: "Material Icons:E15E";
+}
+
+.iconSaveForList {
+    -fx-icon-code: "Material Icons:E86C";
+}
+
+.iconSave2ForList {
+    -fx-icon-code: "Material Icons:E1C2";
 }

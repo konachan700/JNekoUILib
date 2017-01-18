@@ -207,7 +207,8 @@ public class UITest {
         final UIDialog d = new UIDialog(800, 600, true, true, "Tests window");
         final Editor e = new Editor();
         
-        final FragmentList<testUIItemTag> fl = new FragmentList<>(t.ifaces, "ifaces");
+        final FragmentList<testUIItemTag> fl = new FragmentList<>("ifaces");
+        fl.setCollection(t.ifaces); 
         fl.create();
         
         d.addMenu(

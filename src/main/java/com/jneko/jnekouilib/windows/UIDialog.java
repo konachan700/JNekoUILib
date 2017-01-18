@@ -87,6 +87,10 @@ public class UIDialog extends Stage {
             panel.addSeparator();
     }
     
+    public void clearPanel() {
+        panel.getChildren().clear();
+    }
+    
     public void addMenu(AppMenuGroup ... mg) {
         getAppMenu().addMenuGroups(mg); 
     }
@@ -109,5 +113,13 @@ public class UIDialog extends Stage {
 
     public AppMenu getAppMenu() {
         return appMenu;
+    }
+    
+    public void addCustomStyle(String style) {
+        scene.getStylesheets().add(style);
+    }
+    
+    public void removeCustomStyle(String style) {
+        scene.getStylesheets().remove(style);
     }
 }

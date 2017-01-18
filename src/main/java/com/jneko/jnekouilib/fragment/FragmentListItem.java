@@ -135,5 +135,8 @@ public class FragmentListItem<T> extends HBox {
         
         bigIcon.getStyleClass().clear();
         bigIcon.getStyleClass().addAll((selected) ? "FLI_bigIconSelected" : "FLI_bigIcon");
+        
+        this.getStyleClass().removeAll("FLI_thisSelected", "FLI_this");
+        this.getStyleClass().addAll((selected) ? "FLI_thisSelected" : "FLI_this");
     }
 }

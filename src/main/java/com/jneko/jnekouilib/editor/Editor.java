@@ -265,9 +265,10 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
     }
 
     public void readObject(Object obj) {
-        vContainer.getChildren().clear();
-        
         if (obj == null) return;
+        
+        vContainer.getChildren().clear();
+        methodsMap.clear();
         
         final Class<?> cl = obj.getClass();
         if (cl == null) return;
@@ -302,6 +303,8 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
             
             if (m.isAnnotationPresent(UICollection.class))      readObjectCollection(obj, m);
         }
+        
+        System.out.println("READ methodsMap="+methodsMap.size());
     }
     
     private void saveStringField(EditorMethods em, String refName) {    
@@ -367,6 +370,8 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
     
     public void saveObject() {
         final Set<String> ml = methodsMap.keySet();
+        System.out.println("SAVE methodsMap="+methodsMap.size());
+        
         ml.forEach(element -> {
             EditorMethods em = methodsMap.get(element);
             if ((em.getter == null) || (em.setter == null)) return;
