@@ -1,5 +1,7 @@
 package com.jneko.jnekouilib.fragment;
 
+import javafx.scene.input.MouseEvent;
+
 public interface FragmentListItemActionListener<T> {
-    public void OnItemClick(T object, FragmentListItem fli);
+    public void OnItemClick(T object, FragmentListItem fli, MouseEvent me);
 }

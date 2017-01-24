@@ -4,13 +4,9 @@ import com.jneko.jnekouilib.appmenu.AppMenu;
 import com.jneko.jnekouilib.appmenu.AppMenuGroup;
 import com.jneko.jnekouilib.fragment.Fragment;
 import com.jneko.jnekouilib.fragment.FragmentHost;
-import com.jneko.jnekouilib.panel.Panel;
-import com.jneko.jnekouilib.panel.PanelButton;
-import com.jneko.jnekouilib.panel.PanelButtonActionListener;
-import java.util.Arrays;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import jiconfont.icons.GoogleMaterialDesignIcons;
@@ -20,8 +16,8 @@ public class UIDialog extends Stage {
     private final FragmentHost
             rootFragment = new FragmentHost();
     
-    private final Panel
-            panel = new Panel();
+//    private final Panel
+//            panel = new Panel();
     
     private final AppMenu
             appMenu = new AppMenu();
@@ -36,6 +32,23 @@ public class UIDialog extends Stage {
             headerBox = new HBox(),
             rootBox = new HBox();
     
+//    private final Map<String, Panel> 
+//            panels = new HashMap<>();
+//    
+//    public void registerPanel(String panelName, Panel p) {
+//        panels.put(panelName, p);
+//    }
+//    
+//    public void unregisterPanel(String panelName) {
+//        panels.remove(panelName);
+//    }
+    
+//    public void displayPanel(String panelName) {
+//        if (!panels.containsKey(panelName)) return;
+//        headerBox.getChildren().clear();
+//        headerBox.getChildren().addAll(panels.get(panelName)); 
+//    }
+    
     public UIDialog(int width, int height, boolean isHeaderPresent, boolean isMenuPresent, String title) {
         super();
         IconFontFX.register(GoogleMaterialDesignIcons.getIconFont());
@@ -45,7 +58,7 @@ public class UIDialog extends Stage {
         
         if (isHeaderPresent)  {
             rootPane.getChildren().addAll(headerBox, rootBox);
-            headerBox.getChildren().addAll(panel);
+            //headerBox.getChildren().addAll(panel);
         } else 
             rootPane.getChildren().addAll(rootBox);
         
@@ -54,6 +67,7 @@ public class UIDialog extends Stage {
         rootBox.getStyleClass().addAll("maxHeight", "maxWidth");
         appMenu.getStyleClass().addAll("windowMenu");
         
+        rootFragment.setPanelHost(headerBox); 
         if (isMenuPresent)
             rootBox.getChildren().addAll(appMenu, rootFragment);
         else 
@@ -69,27 +83,27 @@ public class UIDialog extends Stage {
         this(width, height, true, true, title);
     }
     
-    public void addPanelButton(String iconStyle, String tooltip, PanelButtonActionListener a) {
-        final PanelButton pb = new PanelButton(iconStyle, tooltip, a);
-        panel.addNode(pb); 
-    }
+//    public void addPanelButton(String iconStyle, String tooltip, PanelButtonActionListener a) {
+//        final PanelButton pb = new PanelButton(iconStyle, tooltip, a);
+//        panel.addNode(pb); 
+//    }
+//    
+//    public void addPanelElements(boolean isClear, Parent ... p) {
+//        if (isClear)
+//            panel.getChildren().clear();
+//        panel.getChildren().addAll(Arrays.asList(p));
+//    }
+//    
+//    public void addPanelSeparator(boolean isFixed) {
+//        if (isFixed)
+//            panel.addFixedSeparator();
+//        else
+//            panel.addSeparator();
+//    }
     
-    public void addPanelElements(boolean isClear, Parent ... p) {
-        if (isClear)
-            panel.getChildren().clear();
-        panel.getChildren().addAll(Arrays.asList(p));
-    }
-    
-    public void addPanelSeparator(boolean isFixed) {
-        if (isFixed)
-            panel.addFixedSeparator();
-        else
-            panel.addSeparator();
-    }
-    
-    public void clearPanel() {
-        panel.getChildren().clear();
-    }
+//    public void clearPanel() {
+//        panel.getChildren().clear();
+//    }
     
     public void addMenu(AppMenuGroup ... mg) {
         getAppMenu().addMenuGroups(mg); 
@@ -107,8 +121,8 @@ public class UIDialog extends Stage {
         return rootFragment;
     }
 
-    public Panel getPanel() {
-        return panel;
+    public Pane getPanelHost() {
+        return headerBox;
     }
 
     public AppMenu getAppMenu() {

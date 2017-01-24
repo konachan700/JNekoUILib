@@ -413,7 +413,6 @@ Tooltip {
     -fx-pref-width: 48px;
     -fx-max-width: 48px;
     -fx-min-width: 48px;
-    -fx-icon-code: "Material Icons:E1BD";
 }
 
 .FLI_bigIconSelected {
@@ -422,7 +421,18 @@ Tooltip {
     -fx-pref-width: 48px;
     -fx-max-width: 48px;
     -fx-min-width: 48px;
+}
+
+.FLI_def_icon {
     -fx-icon-code: "Material Icons:E1BD";
+}
+
+.FLI_dir_icon {
+    -fx-icon-code: "Material Icons:E2C8";
+}
+
+.FLI_file_icon {
+    -fx-icon-code: "Material Icons:E873";
 }
 
 .FLI_this {
@@ -462,6 +472,9 @@ Tooltip {
 }
 
 .topPanel {
+    -fx-pref-height: 52px;
+    -fx-min-height: 52px;
+    -fx-max-height: 52px;
     -fx-border-color: #eee;
     -fx-border-width: 0px 0px 1px 0px;
     -fx-padding: 4px;

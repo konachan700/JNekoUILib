@@ -1,6 +1,7 @@
 package com.jneko.jnekouilib.fragment;
 
 import java.util.Stack;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 public class FragmentHost extends VBox {
@@ -10,10 +11,17 @@ public class FragmentHost extends VBox {
     private Fragment
             currentFragment = null;
     
+    private Pane
+            panelHost = null;
+    
     public FragmentHost() {
         super();
         super.getStylesheets().add("/styles/window.css");
         super.getStyleClass().addAll("maxHeight", "maxWidth");
+    }
+    
+    public void setPanelHost(Pane fh) {
+        panelHost = fh;
     }
     
     public void showFragment(Fragment f, boolean clearAll) {
@@ -28,6 +36,11 @@ public class FragmentHost extends VBox {
         
         this.getChildren().clear();
         this.getChildren().add(currentFragment);
+        
+        if (panelHost != null) {
+            panelHost.getChildren().clear();
+            panelHost.getChildren().add(f.getPanel()); 
+        }
     }
     
     public void back() {
@@ -38,5 +51,10 @@ public class FragmentHost extends VBox {
         
         this.getChildren().clear();
         this.getChildren().add(currentFragment);
+        
+        if (panelHost != null) {
+            panelHost.getChildren().clear();
+            panelHost.getChildren().add(currentFragment.getPanel()); 
+        }
     }
 }

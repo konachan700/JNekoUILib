@@ -4,6 +4,7 @@ import com.jneko.jnekouilib.anno.UIListItem;
 import com.jneko.jnekouilib.anno.UIListItemHeader;
 import com.jneko.jnekouilib.fragment.Fragment;
 import com.jneko.jnekouilib.utils.MessageBus;
+import com.jneko.jnekouilib.utils.MessageBusActions;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -135,11 +136,11 @@ public class EditorFragmentList extends Fragment {
                     if (((CheckBox) el.uiElement).isSelected()) fls.onSave(el.uiName, el.currentItem);
                 }
             });
-            MessageBus.sendMessage(refName, "refresh");
+            MessageBus.sendMessage(MessageBusActions.EditorFragmentListRefresh,  refName);
         } else {
             if (currItem != null) {
                 fls.onSave(currItem.uiName, currItem.currentItem);
-                MessageBus.sendMessage(refName, "refresh");
+                MessageBus.sendMessage(MessageBusActions.EditorFragmentListRefresh,  refName);
             }
         }
     }

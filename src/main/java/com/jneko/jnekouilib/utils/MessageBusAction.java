@@ -1,5 +1,5 @@
 package com.jneko.jnekouilib.utils;
 
 public interface MessageBusAction {
-    public void OnMessage(String msg, Object messagePayload);
+    public void OnMessage(MessageBusActions messageID, Object ... messagePayload);
 }

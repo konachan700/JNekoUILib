@@ -6,8 +6,10 @@ import com.jneko.jnekouilib.anno.UIListItemRightText;
 import com.jneko.jnekouilib.anno.UIListItemSubtitle;
 import com.jneko.jnekouilib.anno.UIListItemTextLine;
 import com.jneko.jnekouilib.editor.Editor;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.geometry.Pos;
@@ -15,6 +17,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import jiconfont.javafx.IconNode;
+import net.sf.jmimemagic.Magic;
+import net.sf.jmimemagic.MagicException;
+import net.sf.jmimemagic.MagicMatchNotFoundException;
+import net.sf.jmimemagic.MagicParseException;
 
 public class FragmentListItem<T> extends HBox {
     private final T
@@ -35,23 +41,27 @@ public class FragmentListItem<T> extends HBox {
     private final FragmentListItemActionListener<T>
             actionListener;
     
-    public FragmentListItem(T object, FragmentListItemActionListener<T> al) {
+    public FragmentListItem(T object, String icon, FragmentListItemActionListener<T> al) {
         myObject = object;
         actionListener = al;
         
         this.getStyleClass().addAll(Editor.maxWidthStyle, "FLI_this");
         this.setAlignment(Pos.CENTER);
         this.setOnMouseClicked(value -> {
-            actionListener.OnItemClick(myObject, this); 
+            actionListener.OnItemClick(myObject, this, value); 
         });
         
-        bigIcon.getStyleClass().addAll("FLI_bigIcon");
+        bigIcon.getStyleClass().addAll("FLI_bigIcon", icon);
         mainTitle.getStyleClass().addAll("FLI_mainTitle");
         subTitle.getStyleClass().addAll("FLI_subTitle");
         textLine.getStyleClass().addAll("FLI_textLine");
         rightText.getStyleClass().addAll("FLI_rightText");
         
         rightText.setAlignment(Pos.CENTER_RIGHT);
+    }
+    
+    public FragmentListItem(T object, FragmentListItemActionListener<T> al) {
+        this(object, "FLI_def_icon", al);
     }
     
     private VBox createVBox() {
@@ -66,6 +76,43 @@ public class FragmentListItem<T> extends HBox {
         return sep;
     }
     
+    private void createFile() {
+        Path path;
+        File file;
+        
+        if (getMyObject() instanceof Path) {
+            path = (Path) getMyObject();
+            file = path.toFile();
+        } else if (getMyObject() instanceof File) {
+            file = (File) getMyObject();
+        } else {
+            return;
+        }
+
+        final String 
+                rr = (file.canRead()) ? "R" : "",
+                rw = (file.canWrite()) ? "W" : "",
+                re = (file.canExecute()) ? "E" : "";
+
+        mainTitle.setText(file.getName());
+        bigIcon.getStyleClass().clear();
+        if (file.isDirectory()) {
+            subTitle.setText("Directory");
+            rightText.setText(rr + rw);
+            bigIcon.getStyleClass().addAll("FLI_bigIcon", "FLI_dir_icon");
+        } else {
+            subTitle.setText("File size: "+file.length()+" bytes");
+            rightText.setText(rr + rw + re);
+            try {
+                String mimeType = Magic.getMagicMatch(file, false).getMimeType();
+                textLine.setText(mimeType);
+            } catch (MagicParseException | MagicMatchNotFoundException | MagicException ex) {
+                //Logger.getLogger(FragmentListItem.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            bigIcon.getStyleClass().addAll("FLI_bigIcon", "FLI_file_icon");
+        }
+    }
+    
     public void create() {
         if (getMyObject() == null) return;
         if (getMyObject() instanceof String) {
@@ -75,38 +122,42 @@ public class FragmentListItem<T> extends HBox {
         } else if (getMyObject() instanceof Number) {
             final Number val = (Number) getMyObject();
             mainTitle.setText("#"+val.toString());
-            this.getChildren().addAll(bigIcon, mainTitle);
+            this.getChildren().addAll(bigIcon, mainTitle); 
         } else {
-            if (! myObject.getClass().isAnnotationPresent(UIListItem.class)) return;
-            
-            final Method[] methods = getMyObject().getClass().getMethods();
-            if (methods == null) return;
-            if (methods.length == 0) return;
-            
-            for (Method method : methods) {
-                try {
-                    String retVal;
-                    if (method.isAnnotationPresent(UIListItemHeader.class)) {
-                        retVal = (String) method.invoke(getMyObject());
-                        if (retVal != null) mainTitle.setText(retVal); else mainTitle.setText("");
-                    }
+            if ((getMyObject() instanceof Path) || (getMyObject() instanceof File)) {
+                createFile();
+            } else {
+                if (! myObject.getClass().isAnnotationPresent(UIListItem.class)) return;
 
-                    if (method.isAnnotationPresent(UIListItemSubtitle.class)) {
-                        retVal = (String) method.invoke(getMyObject());
-                        if (retVal != null) subTitle.setText(retVal); else subTitle.setText("");
-                    }
+                final Method[] methods = getMyObject().getClass().getMethods();
+                if (methods == null) return;
+                if (methods.length == 0) return;
 
-                    if (method.isAnnotationPresent(UIListItemTextLine.class)) {
-                        retVal = (String) method.invoke(getMyObject());
-                        if (retVal != null) textLine.setText(retVal); else textLine.setText("");
-                    }
+                for (Method method : methods) {
+                    try {
+                        String retVal;
+                        if (method.isAnnotationPresent(UIListItemHeader.class)) {
+                            retVal = (String) method.invoke(getMyObject());
+                            if (retVal != null) mainTitle.setText(retVal); else mainTitle.setText("");
+                        }
 
-                    if (method.isAnnotationPresent(UIListItemRightText.class)) {
-                        retVal = (String) method.invoke(getMyObject());
-                        if (retVal != null) rightText.setText(retVal); else rightText.setText("");
+                        if (method.isAnnotationPresent(UIListItemSubtitle.class)) {
+                            retVal = (String) method.invoke(getMyObject());
+                            if (retVal != null) subTitle.setText(retVal); else subTitle.setText("");
+                        }
+
+                        if (method.isAnnotationPresent(UIListItemTextLine.class)) {
+                            retVal = (String) method.invoke(getMyObject());
+                            if (retVal != null) textLine.setText(retVal); else textLine.setText("");
+                        }
+
+                        if (method.isAnnotationPresent(UIListItemRightText.class)) {
+                            retVal = (String) method.invoke(getMyObject());
+                            if (retVal != null) rightText.setText(retVal); else rightText.setText("");
+                        }
+                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                        Logger.getLogger(Editor.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-                    Logger.getLogger(Editor.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -133,8 +184,8 @@ public class FragmentListItem<T> extends HBox {
     public void setSelected(boolean selected) {
         this.selected = selected;
         
-        bigIcon.getStyleClass().clear();
-        bigIcon.getStyleClass().addAll((selected) ? "FLI_bigIconSelected" : "FLI_bigIcon");
+//        bigIcon.getStyleClass().clear();
+        //bigIcon.getStyleClass().addAll((selected) ? "FLI_bigIconSelected" : "FLI_bigIcon");
         
         this.getStyleClass().removeAll("FLI_thisSelected", "FLI_this");
         this.getStyleClass().addAll((selected) ? "FLI_thisSelected" : "FLI_this");

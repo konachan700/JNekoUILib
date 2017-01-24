@@ -2,13 +2,14 @@ package com.jneko.jnekouilib.fragment;
 
 import com.jneko.jnekouilib.editor.Editor;
 import com.jneko.jnekouilib.editor.EditorFormValidator;
-import com.jneko.jnekouilib.panel.Panel;
 import com.jneko.jnekouilib.panel.PanelButton;
 import com.jneko.jnekouilib.utils.MessageBus;
+import com.jneko.jnekouilib.utils.MessageBusActions;
+import com.jneko.jnekouilib.utils.UIUtils;
 import java.util.ArrayList;
 import java.util.Collection;
-import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
 public class FragmentList<T> extends Fragment implements FragmentListItemActionListener<T> {
@@ -24,11 +25,6 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
     private final VBox
             vContainer = new VBox();
     
-    private PanelButton 
-            pbAdd = null,
-            pbDel = null,
-            pbEdit = null;
-    
     private T
             selectedObject = null;
     
@@ -38,8 +34,12 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
     private final Editor
             editor = new Editor();
     
-    private final ArrayList<Node> 
-            lastPanelButtons = new ArrayList<>();
+    private EditorFormValidator
+            formValForEdit = null,
+            formValForAdd = null;
+    
+    private FragmentListObjectRequester<T>
+            objectRequesterForNew = null;
     
     public void setCollection(Collection<T> c) {
         items = c;
@@ -59,9 +59,27 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
         
         super.getChildren().addAll(elementsSP);
         
-        MessageBus.registerMessageReceiver(collectionRefName, "refresh", (event, pl) -> {
-            create();
+        MessageBus.registerMessageReceiver( 
+                MessageBusActions.EditorFragmentListRefresh, 
+                (b, objects) -> {
+            final String msg = UIUtils.getStringFromObject(0, objects);
+            if (msg == null) return;
+            if (msg.equalsIgnoreCase(collectionRefName)) create();
         });
+        
+        super.getPanel().clear();
+        super.getPanel().addSeparator();
+        super.getPanel().addNodes(
+                new PanelButton("iconAddForList", "Add item to list...", e -> {
+                    addItemForm();
+                }),
+                new PanelButton("iconDeleteForList", "Delete item from list", e -> {
+                    deleteSelectedItem();
+                }),
+                new PanelButton("iconEditForList", "Edit selected item...", e -> {
+                    editSelectedItem();
+                })
+        );
     }
     
     public final void create() {
@@ -78,103 +96,83 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
         });
     }
     
-    private void goBack(Panel p) {
+    private void goBack() {
         super.getHost().back();
-        p.clear();
-        p.setAll(lastPanelButtons);
         create();
     }
     
-    public void addItemForm(Panel p, T newObject, EditorFormValidator efv) {
+    public void addItemForm() {
+        if (objectRequesterForNew == null) return;
+        
+        final T newObject = objectRequesterForNew.requestObject(null);
+        
         editor.readObject(newObject); 
         
-        final PanelButton pbBack = new PanelButton("iconBackForList", "Exit without save", ex -> {
-                goBack(p);
-            });
+        System.out.println(newObject.getClass().getName());
         
-        final PanelButton pbSave = new PanelButton("iconSaveForList", "Save and exit", ex -> {
-                editor.validateForm(efv);
-                editor.saveObject();
-                items.add(newObject);
-                MessageBus.sendMessage("hibernate", "addnew", newObject);
-                goBack(p);
-            });
-        
-        lastPanelButtons.clear();
-        lastPanelButtons.addAll(p.getChildren());
-        
-        p.clear();
-        p.addNodes(pbBack, pbSave); 
+        editor.getPanel().clear();
+        editor.getPanel().addSeparator();
+        editor.getPanel().addNodes(
+                new PanelButton("iconBackForList", "Exit without save", ex -> {
+                        goBack();
+                }),
+                new PanelButton("iconSaveForList", "Save and exit", ex -> {
+                    if (formValForAdd != null) 
+                        editor.validateForm(formValForAdd);
+                    editor.saveObject();
+                    items.add(newObject);
+                    MessageBus.sendMessage(MessageBusActions.HibernateAddNew, newObject);
+                    goBack();
+                })
+        );
         
         super.getHost().showFragment(editor, false);
     }
-    
-    public PanelButton getAddButton(Panel p, FragmentListObjectRequester<T> req, EditorFormValidator efv) {
-        if (pbAdd == null) 
-            pbAdd = new PanelButton("iconAddForList", "Add item to list...", e -> {
-                addItemForm(p, req.requestObject(null), efv);
-            });
-        return pbAdd;
-    }
+
     
     public void deleteSelectedItem() {
         if (selectedObject == null) return;
         
         items.remove(selectedObject);
-        MessageBus.sendMessage("hibernate", "remove", selectedObject);
+        MessageBus.sendMessage(MessageBusActions.HibernateDelete, selectedObject);
         
         selectedObject = null;
         selectedItem = null;
         
         create();
     }
-    
-    public PanelButton getDelButton() {
-        if (pbDel == null) 
-            pbDel = new PanelButton("iconDeleteForList", "Delete item from list", e -> {
-                deleteSelectedItem();
-            });
-        return pbDel;
-    }
+
     
     public void addCollectionHelper(String name, Collection items) {
         editor.addCollectionHelper(name, items);
     }
     
-    public void editSelectedItem(Panel p, EditorFormValidator efv) {
+    public void editSelectedItem() {
         if (selectedObject == null) return;
+        if (objectRequesterForNew == null) return;
+        
+        editor.readObject(selectedObject);
+        
+        editor.getPanel().clear();
+        editor.getPanel().addSeparator();
+        editor.getPanel().addNodes(
+                new PanelButton("iconBackForList", "Exit without save", e -> {
+                    goBack();
+                }),
+                new PanelButton("iconSaveForList", "Save and exit", e -> {
+                    if (formValForEdit != null) 
+                            editor.validateForm(formValForEdit);
+                    editor.saveObject();
+                    MessageBus.sendMessage(MessageBusActions.HibernateEdit, selectedObject);
+                    goBack();
+                })
+        );
 
-        final PanelButton pbBack = new PanelButton("iconBackForList", "Exit without save", e -> {
-                goBack(p);
-            });
-        
-        final PanelButton pbSave = new PanelButton("iconSaveForList", "Save and exit", e -> {
-                editor.validateForm(efv);
-                editor.saveObject();
-                MessageBus.sendMessage("hibernate", "edit", selectedObject);
-                goBack(p);
-            });
-        
-        lastPanelButtons.clear();
-        lastPanelButtons.addAll(p.getChildren());
-        
-        p.clear();
-        p.addNodes(pbBack, pbSave); 
-
-        editor.readObject(selectedObject); 
         super.getHost().showFragment(editor, false);
     }
     
-    public PanelButton getEditButton(Panel p, EditorFormValidator efv) {
-        if (pbEdit == null) 
-            pbEdit = new PanelButton("iconEditForList", "Edit selected item...", e -> {
-                editSelectedItem(p, efv);
-            });
-        return pbEdit;
-    }
-    
     @Override
-    public void OnItemClick(T object, FragmentListItem fli) {
+    public void OnItemClick(T object, FragmentListItem fli, MouseEvent me) {
         uiItems.forEach(item -> {
             item.setSelected(false);
         });
@@ -190,5 +188,29 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
     
     public FragmentListItem<T> getUIItem(int index) {
         return uiItems.get(index);
+    }
+
+    public EditorFormValidator getFormValForEdit() {
+        return formValForEdit;
+    }
+
+    public void setFormValForEdit(EditorFormValidator formValForEdit) {
+        this.formValForEdit = formValForEdit;
+    }
+
+    public EditorFormValidator getFormValForAdd() {
+        return formValForAdd;
+    }
+
+    public void setFormValForAdd(EditorFormValidator formValForAdd) {
+        this.formValForAdd = formValForAdd;
+    }
+
+    public FragmentListObjectRequester<T> getObjectRequesterForNew() {
+        return objectRequesterForNew;
+    }
+
+    public void setObjectRequesterForNew(FragmentListObjectRequester<T> objectRequesterForNew) {
+        this.objectRequesterForNew = objectRequesterForNew;
     }
 }

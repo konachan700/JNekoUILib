@@ -16,6 +16,7 @@ import com.jneko.jnekouilib.anno.UITextArea;
 import com.jneko.jnekouilib.appmenu.AppMenuGroup;
 import com.jneko.jnekouilib.appmenu.AppMenuItem;
 import com.jneko.jnekouilib.editor.Editor;
+import com.jneko.jnekouilib.fragment.FragmentFileList;
 import com.jneko.jnekouilib.fragment.FragmentList;
 import com.jneko.jnekouilib.windows.UIDialog;
 import java.util.ArrayList;
@@ -209,7 +210,10 @@ public class UITest {
         
         final FragmentList<testUIItemTag> fl = new FragmentList<>("ifaces");
         fl.setCollection(t.ifaces); 
+        fl.setObjectRequesterForNew(object -> new testUIItemTag());
         fl.create();
+        
+        final FragmentFileList files = new FragmentFileList();
         
         d.addMenu(
                 new AppMenuGroup(
@@ -219,11 +223,12 @@ public class UITest {
                         }).defaultSelected(),
                         new AppMenuItem("Test List", (c) -> {
                             d.showFragment(fl, true);
+                        }),
+                        new AppMenuItem("Test File list", (c) -> {
+                            d.showFragment(files, true);
                         })
                 )
         );
-        
-        d.addPanelButton("iconTest01", "test button", a -> {});
         
         e.addCollectionHelper("ifaces", al);
         e.addCollectionHelper("ifacesOne", al);

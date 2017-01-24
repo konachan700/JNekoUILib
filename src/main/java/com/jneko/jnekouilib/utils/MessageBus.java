@@ -5,50 +5,42 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/*******************************************************************************************************************
+ * 
+ *   АХТУНГ !!!
+ * 
+ *   Это экспериментальный класс. И это костыль.
+ *   Если кто-то захочет использовать его для учебы или своего проекта, знайте: так делать не надо =) 
+ * 
+ *   Подобный механизм тут нужен для связывания разных классов, дабы не тащить в них сотню разных слушателей,
+ *   что облегчает кодинг. Однако это сильно снижает читаемость кода самой библиотеки. 
+ *   Хочу впихнуть кодинг гуя в минимальное количество строк. На костыли пофиг, в продакшн не пойдет.
+ * 
+ *******************************************************************************************************************/
+
 public class MessageBus {
-    private static final Map<String, Set<MessageBusAction>>
+    private static final Map<MessageBusActions, Set<MessageBusAction>>
             messages = new HashMap<>();
     
-    private static String getMessage(String a, String b) {
-        return a + "_" + b;
-    } 
-    
-    public static final void registerMessageReceiver(String messageReceiverName, String messageID, MessageBusAction action) {
-        final String msg = getMessage(messageReceiverName, messageID);
-        if (!isMessageReceiverExist(msg))
-            messages.put(msg, new HashSet<>());
-        
-        messages.get(msg).add(action);
+    public static final void sendMessage(MessageBusActions messageID) {
+        sendMessage(messageID, new Object());
     }
     
-    public static final void unregisterMessageReceiver(String messageReceiverName, String messageID, MessageBusAction action) {
-        final String msg = getMessage(messageReceiverName, messageID);
-        if (!isMessageReceiverExist(msg))
-            return;
-        messages.get(msg).remove(action);
-    }
-    
-    public static final void unregisterAllMessageReceivers(String messageReceiverName, String messageID) {
-        final String msg = getMessage(messageReceiverName, messageID);
-        if (!isMessageReceiverExist(msg))
-            return;
-        messages.remove(msg);
-    }
-    
-    private static boolean isMessageReceiverExist(String msg) {
-        return messages.containsKey(msg);
-    }   
-    
-    public static final void sendMessage(String messageReceiverName, String messageID, Object messagePayload) {
-        final String msg = getMessage(messageReceiverName, messageID);
-        if (!isMessageReceiverExist(msg))
-            return;
-        messages.get(msg).forEach(msgX -> {
-            msgX.OnMessage(msg, messagePayload); 
+    public static final void sendMessage(MessageBusActions messageID, Object ... objects) {
+        if (!messages.containsKey(messageID)) return;
+        messages.get(messageID).forEach(action -> {
+            action.OnMessage(messageID, objects); 
         });
     }
+            
+    public static final void registerMessageReceiver(MessageBusActions messageID, MessageBusAction action) {
+        if (!messages.containsKey(messageID)) 
+            messages.put(messageID, new HashSet<>());
+        messages.get(messageID).add(action);
+    }
     
-    public static final void sendMessage(String messageReceiverName, String messageID) {
-        sendMessage(messageReceiverName, messageID, null);
+    public static final void unregisterMessageReceiver(MessageBusActions messageID) {
+        if (messages.containsKey(messageID))
+            messages.remove(messageID);
     }
 }
