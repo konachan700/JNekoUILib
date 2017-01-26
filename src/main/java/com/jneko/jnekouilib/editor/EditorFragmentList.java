@@ -198,6 +198,8 @@ public class EditorFragmentList extends Fragment {
 //                                    if (actionListener != null) {
 //                                        actionListener.OnListYesClick(selectedItems);
 //                                    }
+                                    if (actionListener != null) 
+                                        actionListener.OnListNoClick(this);
                                     event.consume();
                                     super.back();
                                 });

@@ -116,6 +116,10 @@ Tooltip {
     -fx-min-width: 1px;
 }
 
+.eStringFieldElementsListSmall {
+    -fx-padding: 0px 0px 0px 20px;
+}
+
 .eStringFieldElementRoot {
 /*    -fx-pref-height: 64px;
     -fx-min-height: 64px;
@@ -134,6 +138,15 @@ Tooltip {
     -fx-max-height: 18px;
     -fx-background-color: transparent;
     -fx-border-width: 0px;
+}
+
+.eStringFieldElementLabelListSmall {
+    -fx-font-family: "Linux Biolinum";
+    -fx-font-size: 12px;
+    -fx-text-fill: #777;
+    -fx-background-color: transparent;
+    -fx-border-width: 0px;
+    -fx-padding: 2px;
 }
 
 .eStringFieldElementText {
@@ -610,4 +623,8 @@ Tooltip {
 
 .iconSave2ForList {
     -fx-icon-code: "Material Icons:E1C2";
+}
+
+.iconCompileProfile {
+    -fx-icon-code: "Material Icons:E169";
 }

@@ -182,6 +182,10 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
         selectedItem = fli;
     }
     
+    public T getSelectedObject() {
+        return selectedObject;
+    }
+    
     public T getItem(int index) {
         return uiItems.get(index).getMyObject();
     }

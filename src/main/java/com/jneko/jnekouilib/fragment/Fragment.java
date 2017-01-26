@@ -3,7 +3,7 @@ package com.jneko.jnekouilib.fragment;
 import com.jneko.jnekouilib.panel.Panel;
 import javafx.scene.layout.VBox;
 
-public abstract class Fragment extends VBox {
+public class Fragment extends VBox {
     private FragmentHost 
             host = null;
     
@@ -14,6 +14,13 @@ public abstract class Fragment extends VBox {
         super();
         super.getStylesheets().add("/styles/window.css");
         super.getStyleClass().addAll("maxHeight", "maxWidth");
+    }
+    
+    public Fragment(FragmentHost host) {
+        super();
+        super.getStylesheets().add("/styles/window.css");
+        super.getStyleClass().addAll("maxHeight", "maxWidth");
+        this.host = host;
     }
     
     public FragmentHost getHost() {

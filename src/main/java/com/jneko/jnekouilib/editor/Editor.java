@@ -225,7 +225,9 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
             if (Collection.class.isAssignableFrom(m.getReturnType())) { 
                 methodsMap.get(mName).getter = m;
 
-                final ElementListLink elString = new ElementListLink();
+                final ElementListLink elString = new ElementListLink(mName, o, m);
+                elString.create();
+                
                 final EditorFragmentList flist = new EditorFragmentList(
                         m.getAnnotation(UICollection.class).multiSelect() == 1
                 );

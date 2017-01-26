@@ -25,6 +25,16 @@ public class Panel extends HBox {
         this.getChildren().add(sep1);
     }
     
+    public void addFixedSeparator(int position) {
+        final VBox sep1 = new VBox();
+        sep1.getStyleClass().addAll("topPanelSeparator");
+        this.getChildren().add(position, sep1);
+    }
+    
+    public void addNode(Node element, int position) {
+        this.getChildren().add(position, element);
+    }
+    
     public void addNode(Node element) {
         this.getChildren().add(element);
     }
