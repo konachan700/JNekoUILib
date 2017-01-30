@@ -230,13 +230,13 @@ public class Generator extends Application {
         }
         
         classHeader
+                .append("import com.jneko.jnekouilib.anno.*;\nimport java.io.Serializable;\nimport javax.persistence.*;\n\n")
                 .append("@Entity\n@UIListItem\n@UILibDataSource\npublic class ")
                 .append(_uC(className))
                 .append(" implements Serializable {\n")
-                .append("\t@Id\n\t@GeneratedValue(strategy=GenerationType.AUTO)\n\t@Column(name=\"ID\", unique = true, nullable = false)\n\tprivate long ID\n;");
+                .append("\t@Id\n\t@GeneratedValue(strategy=GenerationType.AUTO)\n\t@Column(name=\"ID\", unique = true, nullable = false)\n\tprivate long ID;\n");
 
         outText.setText(classHeader.toString() + variableBlock.toString() + "\n" + getSetBlock.toString() + "}\n");
-        
     }
     
     @Override

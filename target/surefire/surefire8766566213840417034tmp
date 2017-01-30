@@ -1,0 +1,6 @@
+#surefire
+#Mon Jan 30 15:40:14 MSK 2017
+maven.ext.class.path=/usr/local/netbeans-8.1/java/maven-nblib/netbeans-eventspy.jar
+user.dir=/home/misaki/devel/java/JNekoUILib
+localRepository=/home/misaki/.m2/repository
+basedir=/home/misaki/devel/java/JNekoUILib
