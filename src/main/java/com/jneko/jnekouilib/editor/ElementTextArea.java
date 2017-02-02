@@ -25,7 +25,12 @@ public class ElementTextArea extends VBox implements EditorTypeText, EditorTypeL
         
         super.getChildren().addAll(title, field);
     }
-
+    
+    public void setTextDisabled(boolean d)    {
+        field.setEditable(d);
+        field.setFocusTraversable(d);
+    }
+    
     @Override
     public void setXText(String text) {
         field.setText(text);

@@ -500,12 +500,29 @@ Tooltip {
 }
 
 .topPanelButton {
-    -fx-pref-width: 48px;
-    -fx-max-width: 48px;
-    -fx-min-width: 48px;
     -fx-pref-height: 48px;
     -fx-min-height: 48px;
     -fx-max-height: 48px;
+}
+
+.topPanelButton_wtext {
+    -fx-padding: 0 12px 0 4px;
+    -fx-font-family: "Share";
+    -fx-font-size: 16px;
+    -fx-text-fill: #333;
+    -fx-border-color: #eee;
+    -fx-border-width: 0px 0px 0px 0px;
+}
+
+.topPanelButton_wtext:hover {
+    -fx-text-fill: #F33;
+    -fx-fill: #b00;
+}
+
+.topPanelButton_width {
+    -fx-pref-width: 48px;
+    -fx-max-width: 48px;
+    -fx-min-width: 48px;
 }
 
 .topPanelButtonIcon {
@@ -627,4 +644,16 @@ Tooltip {
 
 .iconCompileProfile {
     -fx-icon-code: "Material Icons:E169";
+}
+
+.gray_bg {
+    -fx-background-color: #eee;
+}
+
+.iconButtonYes {
+    -fx-icon-code: "Material Icons:E5CA";
+}
+
+.iconButtonNo {
+    -fx-icon-code: "Material Icons:E14C";
 }

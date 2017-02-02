@@ -1,6 +1,9 @@
 package com.jneko.jnekouilib.fragment;
 
+import com.jneko.jnekouilib.editor.ElementTextArea;
 import com.jneko.jnekouilib.panel.Panel;
+import com.jneko.jnekouilib.panel.PanelButton;
+import javafx.geometry.Pos;
 import javafx.scene.layout.VBox;
 
 public class Fragment extends VBox {
@@ -9,6 +12,15 @@ public class Fragment extends VBox {
     
     private final Panel 
             panel = new Panel();
+    
+    private final ElementTextArea
+            messageBox = new ElementTextArea();
+    
+    private final Panel
+            buttonsContainer = new Panel();
+    
+    private Fragment
+            messageForm = null;
     
     public Fragment() {
         super();
@@ -20,14 +32,14 @@ public class Fragment extends VBox {
         super();
         super.getStylesheets().add("/styles/window.css");
         super.getStyleClass().addAll("maxHeight", "maxWidth");
-        this.host = host;
+        setHost(host);
     }
     
     public FragmentHost getHost() {
         return host;
     }
 
-    public void setHost(FragmentHost host) {
+    public final void setHost(FragmentHost host) {
         this.host = host;
     }
     
@@ -38,5 +50,50 @@ public class Fragment extends VBox {
     
     public Panel getPanel() {
         return panel;
+    }
+    
+    public void showMessage(String title, String text) {
+        showMessage(title, text, new PanelButton("iconSaveForList", "OK", "OK", e -> {
+            host.back();
+        }));
+    }
+    
+    public void showMessage(String title, String text, FragmentMessageCallback c) {
+        showMessage(title, text, new PanelButton("iconSaveForList", "OK", "OK", e -> {
+            host.back();
+            c.OnMessageResult(FragmentMessageResult.OK);
+        }));
+    }
+    
+    public void showMessageYesNo(String title, String text, FragmentMessageCallback c) {
+        showMessage(title, text, 
+                new PanelButton("iconButtonYes", "Yes", "Yes", e -> {
+                    host.back();
+                    c.OnMessageResult(FragmentMessageResult.YES);
+                })
+                ,
+                new PanelButton("iconButtonNo", "No", "No", e -> {
+                    host.back();
+                    c.OnMessageResult(FragmentMessageResult.NO);
+                })
+        );
+    }
+    
+    public void showMessage(String title, String text, PanelButton ... buttons) {
+        if (messageForm == null) 
+            messageForm = new Fragment();
+        messageForm.getStyleClass().addAll("gray_bg");
+        messageForm.setHost(host);
+        messageForm.getChildren().clear();
+        messageForm.setAlignment(Pos.CENTER);
+        messageForm.getChildren().addAll(messageBox, buttonsContainer);
+        messageBox.setXLabelText(title);
+        messageBox.setXText(text);
+        messageBox.setTextDisabled(false);
+        buttonsContainer.clear();
+        buttonsContainer.addSeparator();
+        buttonsContainer.addNodes(buttons); 
+        buttonsContainer.addSeparator();
+        host.showFragment(messageForm, false);
     }
 }

@@ -70,13 +70,13 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
         super.getPanel().clear();
         super.getPanel().addSeparator();
         super.getPanel().addNodes(
-                new PanelButton("iconAddForList", "Add item to list...", e -> {
+                new PanelButton("iconAddForList", "Add item to list...", "Add item", e -> {
                     addItemForm();
                 }),
-                new PanelButton("iconDeleteForList", "Delete item from list", e -> {
+                new PanelButton("iconDeleteForList", "Delete item from list", "Remove", e -> {
                     deleteSelectedItem();
                 }),
-                new PanelButton("iconEditForList", "Edit selected item...", e -> {
+                new PanelButton("iconEditForList", "Edit selected item...", "Edit item", e -> {
                     editSelectedItem();
                 })
         );
@@ -131,15 +131,22 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
 
     
     public void deleteSelectedItem() {
-        if (selectedObject == null) return;
+        if (selectedObject == null) { 
+            this.showMessage("Error", "No items selected");
+            return;
+        }
         
-        items.remove(selectedObject);
-        MessageBus.sendMessage(MessageBusActions.HibernateDelete, selectedObject);
-        
-        selectedObject = null;
-        selectedItem = null;
-        
-        create();
+        this.showMessageYesNo("Remove", "Do you want to remove this item?", c -> {
+            if (c == FragmentMessageResult.YES) {
+                items.remove(selectedObject);
+                MessageBus.sendMessage(MessageBusActions.HibernateDelete, selectedObject);
+
+                selectedObject = null;
+                selectedItem = null;
+
+                create();
+            }
+        });
     }
 
     
@@ -148,7 +155,10 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
     }
     
     public void editSelectedItem() {
-        if (selectedObject == null) return;
+        if (selectedObject == null) { 
+            this.showMessage("Error", "No items selected");
+            return;
+        }
         if (objectRequesterForNew == null) return;
         
         editor.readObject(selectedObject);
