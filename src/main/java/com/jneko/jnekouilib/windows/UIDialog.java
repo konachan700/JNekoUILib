@@ -4,7 +4,11 @@ import com.jneko.jnekouilib.appmenu.AppMenu;
 import com.jneko.jnekouilib.appmenu.AppMenuGroup;
 import com.jneko.jnekouilib.fragment.Fragment;
 import com.jneko.jnekouilib.fragment.FragmentHost;
+import java.io.File;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -15,10 +19,7 @@ import jiconfont.javafx.IconFontFX;
 public class UIDialog extends Stage {
     private final FragmentHost
             rootFragment = new FragmentHost();
-    
-//    private final Panel
-//            panel = new Panel();
-    
+
     private final AppMenu
             appMenu = new AppMenu();
     
@@ -26,28 +27,14 @@ public class UIDialog extends Stage {
             scene;
     
     private final VBox
-            rootPane = new VBox();
+            rootPane = new VBox(),
+            contentPane = new VBox(), 
+            menuBox = new VBox(),
+            logoBox = new VBox();
     
     private final HBox
             headerBox = new HBox(),
             rootBox = new HBox();
-    
-//    private final Map<String, Panel> 
-//            panels = new HashMap<>();
-//    
-//    public void registerPanel(String panelName, Panel p) {
-//        panels.put(panelName, p);
-//    }
-//    
-//    public void unregisterPanel(String panelName) {
-//        panels.remove(panelName);
-//    }
-    
-//    public void displayPanel(String panelName) {
-//        if (!panels.containsKey(panelName)) return;
-//        headerBox.getChildren().clear();
-//        headerBox.getChildren().addAll(panels.get(panelName)); 
-//    }
     
     public UIDialog(int width, int height, boolean isHeaderPresent, boolean isMenuPresent, String title) {
         super();
@@ -55,24 +42,27 @@ public class UIDialog extends Stage {
         
         scene = new Scene(rootPane, width, height);
         scene.getStylesheets().add("/styles/window.css");
-        
-        if (isHeaderPresent)  {
-            rootPane.getChildren().addAll(headerBox, rootBox);
-            //headerBox.getChildren().addAll(panel);
-        } else 
-            rootPane.getChildren().addAll(rootBox);
-        
+
         rootPane.getStyleClass().addAll("maxHeight", "maxWidth", "dialog_root");
         headerBox.getStyleClass().addAll("dialog_headerBox", "maxWidth");
         rootBox.getStyleClass().addAll("maxHeight", "maxWidth");
         appMenu.getStyleClass().addAll("windowMenu");
         
         rootFragment.setPanelHost(headerBox); 
-        if (isMenuPresent)
-            rootBox.getChildren().addAll(appMenu, rootFragment);
-        else 
-            rootBox.getChildren().addAll(rootFragment);
         
+        if (isMenuPresent)
+            rootBox.getChildren().addAll(menuBox, contentPane);
+        else 
+            rootBox.getChildren().addAll(contentPane);
+        
+        if (isHeaderPresent)
+            contentPane.getChildren().addAll(headerBox, rootFragment);
+        else
+            contentPane.getChildren().addAll(rootFragment);
+        
+        menuBox.getChildren().addAll(logoBox, appMenu);
+        rootPane.getChildren().addAll(rootBox);
+
         super.setMinWidth(width);
         super.setMinHeight(height);
         super.setTitle(title);
@@ -83,27 +73,20 @@ public class UIDialog extends Stage {
         this(width, height, true, true, title);
     }
     
-//    public void addPanelButton(String iconStyle, String tooltip, PanelButtonActionListener a) {
-//        final PanelButton pb = new PanelButton(iconStyle, tooltip, a);
-//        panel.addNode(pb); 
-//    }
-//    
-//    public void addPanelElements(boolean isClear, Parent ... p) {
-//        if (isClear)
-//            panel.getChildren().clear();
-//        panel.getChildren().addAll(Arrays.asList(p));
-//    }
-//    
-//    public void addPanelSeparator(boolean isFixed) {
-//        if (isFixed)
-//            panel.addFixedSeparator();
-//        else
-//            panel.addSeparator();
-//    }
+    public void addLogo(Node logo) {
+        logoBox.getChildren().clear();
+        logoBox.getChildren().add(logo);
+    }
     
-//    public void clearPanel() {
-//        panel.getChildren().clear();
-//    }
+    public void addLogoFromResources(String logo) {
+        logoBox.getChildren().clear();
+        logoBox.getChildren().add(new ImageView(new Image(getClass().getResourceAsStream(logo))));
+    }
+
+    public void addLogoFromFile(File logo) {
+        logoBox.getChildren().clear();
+        logoBox.getChildren().add(new ImageView(new Image(logo.toURI().toString())));
+    }
     
     public void addMenu(AppMenuGroup ... mg) {
         getAppMenu().addMenuGroups(mg); 

@@ -230,10 +230,14 @@ public class UITest {
                 )
         );
         
+        files.showSave();
+        
         e.addCollectionHelper("ifaces", al);
         e.addCollectionHelper("ifacesOne", al);
         e.readObject(t);
                  
+        d.addLogoFromResources("/styles/test-logo.png");
+        
         d.showFragment(e, true); 
         
         d.showAndWait();

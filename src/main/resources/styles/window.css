@@ -148,6 +148,21 @@ Tooltip {
     -fx-border-width: 0px;
     -fx-padding: 2px;
 }
+.eStringFieldButton {
+    -fx-pref-height: 30px;
+    -fx-min-height: 30px;
+    -fx-max-height: 30px;
+    -fx-pref-width: 30px;
+    -fx-min-width: 30px;
+    -fx-max-width: 30px;
+    -fx-icon-code: "Material Icons:E5C8";
+}
+
+.eStringFieldElementRoot_spacer {
+    -fx-border-width: 1px 0 0 0;
+    -fx-border-color: #ccc;
+}
+
 
 .eStringFieldElementText {
     -fx-font-family: "Linux Biolinum";
@@ -656,4 +671,29 @@ Tooltip {
 
 .iconButtonNo {
     -fx-icon-code: "Material Icons:E14C";
+}
+
+.iconGoToRootDir {
+    -fx-icon-code: "Material Icons:E63B";
+}
+
+.iconGoToLevelUp {
+    -fx-icon-code: "Material Icons:E15E";
+}
+
+.panel_search_text_box {
+    -fx-border-color: #eee;
+    -fx-border-width: 0px 1px 1px 0px;
+    -fx-background-color: #fff;
+    -fx-padding: 4px 4px 4px 8px;
+    -fx-font-weight:bold; 
+    -fx-font-size: 18px;
+    -fx-text-fill: #000;
+    -fx-pref-width: 200px;
+    -fx-max-width:  200px;
+    -fx-min-width:  200px;
+}
+
+.panel_search_icon {
+    -fx-icon-code: "Material Icons:E8B6";
 }

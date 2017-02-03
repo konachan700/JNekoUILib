@@ -17,10 +17,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import jiconfont.javafx.IconNode;
-import net.sf.jmimemagic.Magic;
-import net.sf.jmimemagic.MagicException;
-import net.sf.jmimemagic.MagicMatchNotFoundException;
-import net.sf.jmimemagic.MagicParseException;
 
 public class FragmentListItem<T> extends HBox {
     private final T
@@ -70,6 +66,10 @@ public class FragmentListItem<T> extends HBox {
         return sep;
     }
     
+    public String getTitle() {
+        return mainTitle.getText();
+    }
+    
     private HBox createHBox() {
         final HBox sep = new HBox();
         sep.getStyleClass().addAll(Editor.maxWidthStyle);
@@ -94,7 +94,7 @@ public class FragmentListItem<T> extends HBox {
                 rw = (file.canWrite()) ? "W" : "",
                 re = (file.canExecute()) ? "E" : "";
 
-        mainTitle.setText(file.getName());
+        mainTitle.setText(file.getName().trim().isEmpty() ? file.getAbsolutePath() : file.getName());
         bigIcon.getStyleClass().clear();
         if (file.isDirectory()) {
             subTitle.setText("Directory");
@@ -103,14 +103,18 @@ public class FragmentListItem<T> extends HBox {
         } else {
             subTitle.setText("File size: "+file.length()+" bytes");
             rightText.setText(rr + rw + re);
-            try {
-                String mimeType = Magic.getMagicMatch(file, false).getMimeType();
-                textLine.setText(mimeType);
-            } catch (MagicParseException | MagicMatchNotFoundException | MagicException ex) {
-                //Logger.getLogger(FragmentListItem.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//            try {
+//                String mimeType = Magic.getMagicMatch(file, false).getMimeType();
+//                textLine.setText(mimeType);
+//            } catch (MagicParseException | MagicMatchNotFoundException | MagicException ex) {
+//                //Logger.getLogger(FragmentListItem.class.getName()).log(Level.SEVERE, null, ex);
+//            }
             bigIcon.getStyleClass().addAll("FLI_bigIcon", "FLI_file_icon");
         }
+    }
+    
+    public String getIndexedData() {
+        return mainTitle.getText() + " " + subTitle.getText() + " " + textLine.getText() + " " + rightText.getText();
     }
     
     public void create() {

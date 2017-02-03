@@ -1,15 +1,18 @@
 package com.jneko.jnekouilib.fragment;
 
+import com.jneko.jnekouilib.editor.ElementTextField;
+import com.jneko.jnekouilib.panel.PanelButton;
+import com.jneko.jnekouilib.panel.PanelSearch;
 import com.jneko.jnekouilib.utils.FSParser;
 import com.jneko.jnekouilib.utils.FSParserActionListener;
 import com.jneko.jnekouilib.utils.FSParserActions;
 import com.jneko.jnekouilib.utils.MessageBus;
 import com.jneko.jnekouilib.utils.MessageBusActions;
+import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -28,12 +31,11 @@ public class FragmentFileList extends Fragment implements FragmentListItemAction
     private FragmentListItem
             selectedItem = null;
     
-    private final ArrayList<Node> 
-            lastPanelButtons = new ArrayList<>();
-    
     private final FSParser
             files = new FSParser(this);
     
+    private final ElementTextField
+            fNameForOpenSave = new ElementTextField();
     
     public FragmentFileList() {
         super();
@@ -49,25 +51,63 @@ public class FragmentFileList extends Fragment implements FragmentListItemAction
         
         super.getChildren().addAll(elementsSP);
         
+        fNameForOpenSave.addButton(al -> {
+            final File f = new File(fNameForOpenSave.getXText());
+            if (f.exists() && f.canRead()) {
+                if (f.isDirectory()) {
+                    files.setPath(f.getAbsolutePath());
+                }// else {
+                 //   files.setPath(f.getParent());
+                //}
+                create();
+            } else {
+                super.showMessage("Error", "Incorrect path:\n"+fNameForOpenSave.getXText());
+            }
+        });
+        
         MessageBus.registerMessageReceiver(
                 MessageBusActions.FileListReloadRun, 
                 (b, obj) -> {
             create();
         });
         
+        super.getPanel().clear();
+        super.getPanel().addNodes(
+                new PanelSearch("Enter for search", s -> {
+                    vContainer.getChildren().clear();       
+                    uiItems.forEach(item -> {
+                        if (item.getIndexedData().toLowerCase().contains(s.toLowerCase())) 
+                            vContainer.getChildren().add(item);
+                    });
+                })
+        );
+        super.getPanel().addSeparator();
+        super.getPanel().addNodes(
+                new PanelButton("iconGoToRootDir", "Go to the root directory", "Go to root", e -> {
+                    files.getRoots();
+                }),
+                new PanelButton("iconGoToLevelUp", "Level up", "Go up", e -> {
+                    files.levelUp();
+                })
+        );
+        
         files.init();
-        files.setPath("./");
+        files.setPath("");
         files.getFiles();
     }
-    
+
+    public void showSave() {
+        fNameForOpenSave.setXLabelText("File name or path");
+        if (!super.getChildren().contains(fNameForOpenSave))
+            super.getChildren().addAll(fNameForOpenSave);
+    }
+        
     public final void create() {
         MessageBus.sendMessage(MessageBusActions.FileListReloadStarted);
         uiItems.clear();
         vContainer.getChildren().clear();
         files.getFiles();
     }
-    
-    
     
     public void dispose() {
         files.dispose();
@@ -82,6 +122,8 @@ public class FragmentFileList extends Fragment implements FragmentListItemAction
                 });
                 fli.setSelected(true);
                 selectedItem = fli;
+
+                fNameForOpenSave.setXText(selectedItem.getTitle());
             }else if (me.getClickCount() == 2) {
                 if (object.toFile().isDirectory()) {
                     files.setPath(object);
@@ -99,12 +141,8 @@ public class FragmentFileList extends Fragment implements FragmentListItemAction
     
     @Override
     public void rootListGenerated(Set<Path> pList) {
-        // TODO: add some code
-        MessageBus.sendMessage(MessageBusActions.FileListReloadFinished, pList);
-    }
-
-    @Override
-    public void fileListRefreshed(Path p, CopyOnWriteArrayList<Path> pList, long execTime) {
+        uiItems.clear();
+        vContainer.getChildren().clear();       
         pList.forEach(file -> {
             final FragmentListItem fli = new FragmentListItem(file, this);
             fli.create();
@@ -112,6 +150,35 @@ public class FragmentFileList extends Fragment implements FragmentListItemAction
             vContainer.getChildren().add(fli);
         });
         MessageBus.sendMessage(MessageBusActions.FileListReloadFinished, pList);
+        //fNameForOpenSave.setXText("");
+    }
+
+    @Override
+    public void fileListRefreshed(Path p, CopyOnWriteArrayList<Path> pList, long execTime) {
+        pList.sort((a, b) -> {
+            return a.getFileName().toString().compareToIgnoreCase(b.getFileName().toString());
+        });
+        
+        pList.forEach(file -> {
+            if (file.toFile().isDirectory()) {
+                final FragmentListItem fli = new FragmentListItem(file, this);
+                fli.create();
+                uiItems.add(fli);
+                vContainer.getChildren().add(fli);
+            }
+        });
+        
+        pList.forEach(file -> {
+            if (!file.toFile().isDirectory()) {
+                final FragmentListItem fli = new FragmentListItem(file, this);
+                fli.create();
+                uiItems.add(fli);
+                vContainer.getChildren().add(fli);
+            }
+        });
+
+        MessageBus.sendMessage(MessageBusActions.FileListReloadFinished, pList);
+        //fNameForOpenSave.setXText(p.toFile().getAbsolutePath());
     }
 
     @Override

@@ -1,13 +1,17 @@
 package com.jneko.jnekouilib.editor;
 
 import com.jneko.jnekouilib.anno.UIStringField;
+import com.jneko.jnekouilib.panel.PanelButtonActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import jiconfont.javafx.IconNode;
 
 public class ElementTextField extends VBox implements EditorTypeText, EditorTypeLabeled, EditorTypeValidable, EditorFillable {
     private final TextField
@@ -16,12 +20,29 @@ public class ElementTextField extends VBox implements EditorTypeText, EditorType
     private final Label
             title = new Label();
     
+    private final HBox
+            rootBox = new HBox();
+    
     public ElementTextField() {
         super.getStyleClass().addAll("eStringFieldElementRoot", Editor.maxWidthStyle);
         title.getStyleClass().addAll("eStringFieldElementLabel", Editor.maxWidthStyle);
         field.getStyleClass().addAll("eStringFieldElementText", Editor.maxWidthStyle);
         
-        super.getChildren().addAll(title, field);
+        super.getChildren().addAll(title, rootBox);
+        rootBox.getChildren().addAll(field);
+    }
+    
+    public void addButton(PanelButtonActionListener al) {
+        super.getStyleClass().addAll("eStringFieldElementRoot_spacer");
+        final Button btn = new Button();
+        btn.getStyleClass().addAll("eStringFieldButton");
+        final IconNode iconNode = new IconNode();
+        iconNode.getStyleClass().addAll("eStringFieldButton");
+        btn.setGraphic(iconNode);
+        rootBox.getChildren().addAll(btn);
+        btn.setOnMouseClicked(c -> {
+            al.OnClick(c);
+        });
     }
 
     @Override
