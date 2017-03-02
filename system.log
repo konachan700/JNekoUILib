@@ -1,0 +1,96 @@
+☆ 2017-03-01 13:01:39.309 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 7 methods are mapped.
+☆ 2017-03-01 13:01:44.413 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: object hasn't '@UILibDataSource' annotation!
+☆ 2017-03-01 13:03:59.464 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 7 methods are mapped.
+☆ 2017-03-01 13:04:03.204 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: object hasn't '@UILibDataSource' annotation! Object has a 1 annotations, [@com.jneko.jnekouilib.anno.UIListItem()].
+☆ 2017-03-01 13:04:13.067 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 7 filelds ready to save.
+☆ 2017-03-01 13:04:40.950 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 7 methods are mapped.
+☆ 2017-03-01 13:04:43.555 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 0 methods are mapped.
+☆ 2017-03-01 13:05:10.213 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 7 filelds ready to save.
+☆ 2017-03-01 13:06:41.878 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 7 methods are mapped.
+☆ 2017-03-01 13:06:44.323 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 methods are mapped.
+☆ 2017-03-01 13:06:52.952 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 filelds ready to save.
+☆ 2017-03-01 13:07:00.129 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 methods are mapped.
+☆ 2017-03-01 13:07:05.338 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 methods are mapped.
+☆ 2017-03-01 13:07:09.152 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 filelds ready to save.
+☆ 2017-03-01 13:07:16.241 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 methods are mapped.
+☆ 2017-03-01 13:07:19.496 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 filelds ready to save.
+☆ 2017-03-01 13:07:23.194 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 7 filelds ready to save.
+☆ 2017-03-01 13:44:29.322 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 8 methods are mapped.
+☆ 2017-03-01 13:44:38.015 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 methods are mapped.
+☆ 2017-03-01 13:45:37.690 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 8 filelds ready to save.
+☆ 2017-03-01 13:48:13.022 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 8 methods are mapped.
+☆ 2017-03-01 13:48:17.053 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 methods are mapped.
+☆ 2017-03-01 13:55:49.556 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 8 methods are mapped.
+☆ 2017-03-01 13:55:52.358 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 methods are mapped.
+☆ 2017-03-01 14:01:55.459 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 8 methods are mapped.
+☆ 2017-03-01 14:01:58.475 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 methods are mapped.
+☆ 2017-03-01 14:02:01.193 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 filelds ready to save.
+☆ 2017-03-02 17:40:54.513 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 8 methods are mapped.
+☆ 2017-03-02 17:42:31.486 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 8 methods are mapped.
+☆ 2017-03-02 17:42:34.320 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 methods are mapped.
+☆ 2017-03-02 17:42:35.839 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 filelds ready to save.
+☆ 2017-03-02 17:42:42.776 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 methods are mapped.
+☆ 2017-03-02 17:42:47.583 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 filelds ready to save.
+☆ 2017-03-02 17:42:55.064 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 methods are mapped.
+☆ 2017-03-02 17:42:58.503 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 filelds ready to save.
+☆ 2017-03-02 17:43:37.983 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 methods are mapped.
+☆ 2017-03-02 17:43:40.014 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 filelds ready to save.
+☆ 2017-03-02 17:43:42.095 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 methods are mapped.
+☆ 2017-03-02 17:43:43.198 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 filelds ready to save.
+☆ 2017-03-02 17:43:45.255 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 methods are mapped.
+☆ 2017-03-02 17:43:45.998 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 filelds ready to save.
+☆ 2017-03-02 17:44:06.014 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 8 filelds ready to save.
+☆ 2017-03-02 17:44:25.388 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 8 methods are mapped.
+☆ 2017-03-02 17:44:28.311 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 methods are mapped.
+☆ 2017-03-02 17:44:29.957 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 filelds ready to save.
+☆ 2017-03-02 17:44:36.806 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 methods are mapped.
+☆ 2017-03-02 17:44:39.669 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 2 filelds ready to save.
+☆ 2017-03-02 17:44:48.249 [JavaFX Application Thread] DEBUG com.jneko.jnekouilib.editor.Editor
+		MESSAGE: readObject: 8 filelds ready to save.

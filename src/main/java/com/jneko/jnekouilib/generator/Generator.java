@@ -199,8 +199,8 @@ public class Generator extends Application {
                 if (isTypeNamePresent(arr2, "#long")) {
                     variableBlock
                             .append("\n\t@Column(name=\"").append(arr2[2]).append("\", unique = false)\n")
-                            .append("\tprivate Long ").append(arr2[2]).append(";\n"); 
-                    generateGetSetBlock(arr2[2], "Long", arr2[1], i, GeneratorFieldType.Long);
+                            .append("\tprivate long ").append(arr2[2]).append(";\n"); 
+                    generateGetSetBlock(arr2[2], "long", arr2[1], i, GeneratorFieldType.Long);
                 }
                 
                 if (isTypeNamePresent(arr2, "#str")) {

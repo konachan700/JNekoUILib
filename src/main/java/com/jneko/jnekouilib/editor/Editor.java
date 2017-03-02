@@ -2,6 +2,7 @@ package com.jneko.jnekouilib.editor;
 
 import com.jneko.jnekouilib.anno.UIBooleanField;
 import com.jneko.jnekouilib.anno.UICollection;
+import com.jneko.jnekouilib.anno.UIEditableCollection;
 import com.jneko.jnekouilib.anno.UIFieldType;
 import com.jneko.jnekouilib.anno.UILibDataSource;
 import com.jneko.jnekouilib.anno.UILongField;
@@ -9,6 +10,8 @@ import com.jneko.jnekouilib.anno.UISortIndex;
 import com.jneko.jnekouilib.anno.UIStringField;
 import com.jneko.jnekouilib.anno.UITextArea;
 import com.jneko.jnekouilib.fragment.Fragment;
+import com.jneko.jnekouilib.fragment.FragmentList;
+import com.jneko.jnekouilib.utils.ReflectionUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -23,8 +26,12 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+import org.slf4j.LoggerFactory;
 
 public class Editor extends Fragment implements EditorFragmentListActionListener {
+    private final org.slf4j.Logger 
+            logger = LoggerFactory.getLogger(this.getClass());
+    
     public static final String 
             okStyle         = "controlsGoodInput", 
             errorStyle      = "controlsBadInput",
@@ -32,7 +39,7 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
             ;
     
     private enum FieldType {
-        BOOLEAN_CHECK, STRING, LONG, STRING_MULTILINE, LIST
+        BOOLEAN_CHECK, STRING, LONG, STRING_MULTILINE, LIST, EDITABLE_LIST
     }
     
     private class EditorMethods {
@@ -196,11 +203,6 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
             }
         }
     }
-    
-//    @Override
-//    public void OnListYesClick(Collection selectedItems) {
-//        
-//    }
 
     @Override
     public void OnListNoClick(EditorFragmentList fl) {
@@ -227,7 +229,7 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
 
                 final ElementListLink elString = new ElementListLink(mName, o, m);
                 elString.create();
-                
+                 
                 final EditorFragmentList flist = new EditorFragmentList(
                         m.getAnnotation(UICollection.class).multiSelect() == 1
                 );
@@ -252,6 +254,40 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
         }
     }
     
+    private void readObjectEditableCollection(Object o, Method m) {
+        final String mName = m.getAnnotation(UIEditableCollection.class).name();
+        if (mName == null) return;
+        mmCreate(mName, o, m, FieldType.EDITABLE_LIST);
+        
+        if (m.getAnnotation(UIEditableCollection.class).type() == UIFieldType.SETTER) {
+            methodsMap.get(mName).setter = m;
+        } else if (m.getAnnotation(UIEditableCollection.class).type() == UIFieldType.GETTER) {
+            if (Collection.class.isAssignableFrom(m.getReturnType())) { 
+                final Class cc = ReflectionUtils.getGenericOfCollection(o.getClass(), m);
+                
+                final FragmentList fle = new FragmentList(cc, mName, this);
+                
+                methodsMap.get(mName).getter = m;
+                final String xtext  = m.getAnnotation(UIEditableCollection.class).text();
+                final String xtitle = m.getAnnotation(UIEditableCollection.class).title();
+                if ((title != null) && (xtext != null))
+                    fle.setHeaderText(xtitle, xtext);
+                
+                try {
+                    final Collection annoRetVal = (Collection) m.invoke(o);
+                    //fle.addCollectionHelper(mName, annoRetVal); 
+                    fle.setCollection(annoRetVal);
+                    fle.create();
+
+                } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                    Logger.getLogger(Editor.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                vContainer.getChildren().add(fle);
+            }
+        }
+    }
+    
     private void createSeparator() {
         final VBox separator = new VBox();
         separator.setMaxSize(9999, 8);
@@ -267,18 +303,30 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
     }
 
     public void readObject(Object obj) {
-        if (obj == null) return;
+        if (obj == null) {
+            logger.debug("readObject: object is null!");
+            return;
+        }
         
         vContainer.getChildren().clear();
         methodsMap.clear();
         
         final Class<?> cl = obj.getClass();
-        if (cl == null) return;
-        if (!cl.isAnnotationPresent(UILibDataSource.class)) return;
+        if (!cl.isAnnotationPresent(UILibDataSource.class)) {
+            logger.debug("readObject: object hasn't '@UILibDataSource' annotation! Object has a "+cl.getAnnotations().length+" annotations, "+Arrays.toString(cl.getAnnotations())+".");
+            return;
+        }
         
         final Method[] methods = cl.getMethods();
-        if (methods == null) return;
-        if (methods.length == 0) return;
+        if (methods == null) {
+            logger.debug("readObject: can't read a class methods.");
+            return;
+        }
+        
+        if (methods.length == 0) {
+            logger.debug("readObject: class is empty.");
+            return;
+        }
         
         final List<Method> mSorted = Arrays.asList(methods);
         mSorted.sort((a, b) -> {
@@ -303,10 +351,11 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
             if (m.isAnnotationPresent(UILongField.class))       readObjectSimpleNumberField(obj, m);
             if (m.isAnnotationPresent(UIBooleanField.class))    readObjectCheckBox(obj, m);
             
-            if (m.isAnnotationPresent(UICollection.class))      readObjectCollection(obj, m);
+            if (m.isAnnotationPresent(UICollection.class))              readObjectCollection(obj, m);
+            if (m.isAnnotationPresent(UIEditableCollection.class))      readObjectEditableCollection(obj, m);
         }
         
-        System.out.println("READ methodsMap="+methodsMap.size());
+        logger.debug("readObject: " + methodsMap.size() + " methods are mapped.");
     }
     
     private void saveStringField(EditorMethods em, String refName) {    
@@ -372,7 +421,7 @@ public class Editor extends Fragment implements EditorFragmentListActionListener
     
     public void saveObject() {
         final Set<String> ml = methodsMap.keySet();
-        System.out.println("SAVE methodsMap="+methodsMap.size());
+        logger.debug("readObject: " + methodsMap.size() + " filelds ready to save.");
         
         ml.forEach(element -> {
             EditorMethods em = methodsMap.get(element);

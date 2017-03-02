@@ -2,9 +2,12 @@ package com.jneko.jnekouilib.fragment;
 
 import com.jneko.jnekouilib.editor.Editor;
 import com.jneko.jnekouilib.editor.EditorFormValidator;
+import com.jneko.jnekouilib.panel.Panel;
 import com.jneko.jnekouilib.panel.PanelButton;
+import com.jneko.jnekouilib.panel.PanelInfobox;
 import com.jneko.jnekouilib.utils.MessageBus;
 import com.jneko.jnekouilib.utils.MessageBusActions;
+import com.jneko.jnekouilib.utils.ReflectionUtils;
 import com.jneko.jnekouilib.utils.UIUtils;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,16 +41,84 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
             formValForEdit = null,
             formValForAdd = null;
     
-    private FragmentListObjectRequester<T>
-            objectRequesterForNew = null;
+    private final Panel 
+            panel = new Panel();
+    
+    private final PanelButton
+            addButton;
+
+    private final Class 
+            collectionGenericType;
+    
+    private final Fragment 
+            parentFragment;
+    
+//    private boolean 
+//            enmbeddedMode = false;
+    
+    private final PanelInfobox
+            infoBox = new PanelInfobox("iconTest01");
     
     public void setCollection(Collection<T> c) {
+        if (!ReflectionUtils.isCreatable(c.getClass()))
+            panel.removeNode(addButton);
+        
         items = c;
     }
     
-    public FragmentList(String collectionRefName) {
+    public FragmentList(Class collectionGenericType, String collectionRefName, Fragment parentFragment) {
         super();
+        super.setHost(parentFragment.getHost()); 
+        
+        this.collectionGenericType = collectionGenericType;
+//        enmbeddedMode = true;
+        
+        if (parentFragment == null) throw new Error("The parentFragment cannot be null!");
+        this.parentFragment = parentFragment;
 
+        this.getStyleClass().addAll("embListHeight", "maxWidth");
+
+        elementsSP.getStyleClass().addAll("maxWidth", "maxHeight", "ScrollPane");
+        elementsSP.setContent(vContainer);
+        elementsSP.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        elementsSP.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        elementsSP.setFitToWidth(true);
+        elementsSP.setFitToHeight(false);
+        
+        super.getChildren().addAll(panel, elementsSP);
+        
+        MessageBus.registerMessageReceiver( 
+                MessageBusActions.EditorFragmentListRefresh, 
+                (b, objects) -> {
+            final String msg = UIUtils.getStringFromObject(0, objects);
+            if (msg == null) return;
+            if (msg.equalsIgnoreCase(collectionRefName)) create();
+        });
+        
+        panel.addNodes(infoBox);
+
+        addButton = new PanelButton("iconAddForList", "Add item to list...", "Add item", e -> {
+            addItemForm();
+        });
+           
+        panel.addNodes(
+                addButton,
+                new PanelButton("iconDeleteForList", "Delete item from list", "Remove", e -> {
+                    deleteSelectedItem();
+                }),
+                new PanelButton("iconEditForList", "Edit selected item...", "Edit item", e -> {
+                    editSelectedItem();
+                })
+        );
+    }
+    
+    public FragmentList(Class collectionGenericType, String collectionRefName) {
+        super();
+        addButton = null;
+        parentFragment = null;
+        
+        this.collectionGenericType = collectionGenericType;
+        
         this.getStyleClass().addAll("maxHeight", "maxWidth");
 
         elementsSP.getStyleClass().addAll("maxWidth", "maxHeight", "ScrollPane");
@@ -69,10 +140,15 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
         
         super.getPanel().clear();
         super.getPanel().addSeparator();
+        
+//        if (ReflectionUtils.isCreatable(items)) 
+            super.getPanel().addNodes(
+                    new PanelButton("iconAddForList", "Add item to list...", "Add item", e -> {
+                        addItemForm();
+                    })
+            );
+        
         super.getPanel().addNodes(
-                new PanelButton("iconAddForList", "Add item to list...", "Add item", e -> {
-                    addItemForm();
-                }),
                 new PanelButton("iconDeleteForList", "Delete item from list", "Remove", e -> {
                     deleteSelectedItem();
                 }),
@@ -102,13 +178,13 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
     }
     
     public void addItemForm() {
-        if (objectRequesterForNew == null) return;
+        final T newObject = (T) ReflectionUtils.createNew(collectionGenericType);
+        if (newObject == null) {
+            System.err.println("newObject is null!");
+            return;
+        }
         
-        final T newObject = objectRequesterForNew.requestObject(null);
-        
-        editor.readObject(newObject); 
-        
-        System.out.println(newObject.getClass().getName());
+        editor.readObject(newObject);  
         
         editor.getPanel().clear();
         editor.getPanel().addSeparator();
@@ -126,7 +202,10 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
                 })
         );
         
-        super.getHost().showFragment(editor, false);
+//        if (enmbeddedMode)
+//            parentFragment.getHost().showFragment(editor, false);
+//        else
+            super.getHost().showFragment(editor, false);
     }
 
     
@@ -159,7 +238,7 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
             this.showMessage("Error", "No items selected");
             return;
         }
-        if (objectRequesterForNew == null) return;
+//        if (objectRequesterForNew == null) return;
         
         editor.readObject(selectedObject);
         
@@ -178,7 +257,10 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
                 })
         );
 
-        super.getHost().showFragment(editor, false);
+//        if (enmbeddedMode)
+//            parentFragment.getHost().showFragment(editor, false);
+//        else
+            super.getHost().showFragment(editor, false);
     }
     
     @Override
@@ -220,11 +302,12 @@ public class FragmentList<T> extends Fragment implements FragmentListItemActionL
         this.formValForAdd = formValForAdd;
     }
 
-    public FragmentListObjectRequester<T> getObjectRequesterForNew() {
-        return objectRequesterForNew;
+    public Fragment getParentFragment() {
+        return parentFragment;
     }
-
-    public void setObjectRequesterForNew(FragmentListObjectRequester<T> objectRequesterForNew) {
-        this.objectRequesterForNew = objectRequesterForNew;
+    
+    public void setHeaderText(String title, String text) {
+        infoBox.setText(text);
+        infoBox.setTitle(title); 
     }
 }

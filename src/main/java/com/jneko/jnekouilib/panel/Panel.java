@@ -43,6 +43,10 @@ public class Panel extends HBox {
         this.getChildren().addAll(element);
     }
     
+    public void removeNode(Node element) {
+        this.getChildren().remove(element);
+    }
+    
     public void clear() {
         this.getChildren().clear();
     }

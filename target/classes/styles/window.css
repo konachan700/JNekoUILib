@@ -116,6 +116,12 @@ Tooltip {
     -fx-min-width: 1px;
 }
 
+.embListHeight {
+    -fx-pref-height: 300px;
+    -fx-max-height: 300px;
+    -fx-min-height: 300px;
+}
+
 .eStringFieldElementsListSmall {
     -fx-padding: 0px 0px 0px 20px;
 }

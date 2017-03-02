@@ -2,6 +2,7 @@ package com.jneko.jnekouilib.tests.ui;
 
 import com.jneko.jnekouilib.anno.UIBooleanField;
 import com.jneko.jnekouilib.anno.UICollection;
+import com.jneko.jnekouilib.anno.UIEditableCollection;
 import com.jneko.jnekouilib.anno.UIFieldType;
 import com.jneko.jnekouilib.anno.UILibDataSource;
 import com.jneko.jnekouilib.anno.UIListItem;
@@ -37,7 +38,8 @@ import org.junit.Test;
 
 public class UITest {
     @UIListItem
-    public class testUIItemTag {
+    @UILibDataSource
+    public static class testUIItemTag {
         private long id;
         private String line;
 
@@ -50,19 +52,25 @@ public class UITest {
             this((new Random()).nextInt(), "ListItem#"+(new Random()).nextInt());
         }
         
+        @UISortIndex(index=0)
+        @UILongField(name="DBID", type=UIFieldType.GETTER, readOnly=1, labelText="Test ID")
         public long getId() {
             return id;
         }
 
+        @UILongField(name="DBID", type=UIFieldType.SETTER)
         public void setId(long id) {
             this.id = id;
         }
 
         @UIListItemHeader
+        @UISortIndex(index=1)
+        @UIStringField(name="ModelName", type=UIFieldType.GETTER, readOnly=0, maxChars=64, helpText="Enter text here", labelText="Test name")
         public String getLine() {
             return line;
         }
 
+        @UIStringField(name="ModelName", type=UIFieldType.SETTER)
         public void setLine(String line) {
             this.line = line;
         }
@@ -84,15 +92,20 @@ public class UITest {
     }
     
     @UILibDataSource
-    public class testUIItems {
+    public static class testUIItems {
         private long id;
         private long number;
         private String line;
         private String text;
         private boolean bool;
-        private Set<testUIItemTag> ifaces;
-        private Set<testUIItemTag> ifacesOne;
+        private Set<testUIItemTag> ifaces = new HashSet<>();
+        private Set<testUIItemTag> ifacesOne = new HashSet<>();
+        private Set<testUIItemTag> ifacesE = new HashSet<>();
 
+        public testUIItems() {
+            
+        }
+        
         @UISortIndex(index=0)
         @UILongField(name="DBID", type=UIFieldType.GETTER, readOnly=1, labelText="Test ID")
         public long getId() {
@@ -169,6 +182,17 @@ public class UITest {
         public void setIfacesOne(Set<testUIItemTag> ifaces) {
             this.ifacesOne = ifaces;
         }
+        
+        @UISortIndex(index=21)
+        @UIEditableCollection(name="ifacesEditable", type=UIFieldType.GETTER, text="Select one item from list")
+        public Set<testUIItemTag> getIfacesEditable() {
+            return ifacesE;
+        }
+
+        @UIEditableCollection(name="ifacesEditable", type=UIFieldType.SETTER)
+        public void setIfacesEditable(Set<testUIItemTag> ifaces) {
+            this.ifacesE = ifaces;
+        }
     }
 
     @Rule 
@@ -190,27 +214,27 @@ public class UITest {
         for (int i=0; i<16; i++)
             al.add(new testUIItemTag());
         
-        System.out.println("Collection all items count: "+al.size()); 
+//        System.out.println("Collection all items count: "+al.size()); 
         
         t.ifaces = new HashSet<>();
         t.ifaces.add(al.get(0));
         t.ifaces.add(al.get(5));
         t.ifaces.add(al.get(7));
         
-        System.out.println("On-start preselected items count (MSL): "+ t.ifaces.size());
+//        System.out.println("On-start preselected items count (MSL): "+ t.ifaces.size());
         
         t.ifacesOne = new HashSet<>();
         t.ifacesOne.add(al.get(0));
         t.ifacesOne.add(al.get(2));
         
-        System.out.println("On-start preselected items count (SSL): "+ t.ifacesOne.size());
+//        System.out.println("On-start preselected items count (SSL): "+ t.ifacesOne.size());
 
         final UIDialog d = new UIDialog(800, 600, true, true, "Tests window");
         final Editor e = new Editor();
         
-        final FragmentList<testUIItemTag> fl = new FragmentList<>("ifaces");
+        final FragmentList<testUIItemTag> fl = new FragmentList<>(testUIItemTag.class, "ifaces");
         fl.setCollection(t.ifaces); 
-        fl.setObjectRequesterForNew(object -> new testUIItemTag());
+//        fl.setObjectRequesterForNew(object -> new testUIItemTag());
         fl.create();
         
         final FragmentFileList files = new FragmentFileList();
@@ -232,6 +256,7 @@ public class UITest {
         
         files.showSave();
         
+        e.setHost(d.getRootFragment()); 
         e.addCollectionHelper("ifaces", al);
         e.addCollectionHelper("ifacesOne", al);
         e.readObject(t);
@@ -243,8 +268,8 @@ public class UITest {
         d.showAndWait();
         e.saveObject();
         
-        System.out.println("Selected items count on MSL: "+ t.ifaces.size());
-        System.out.println("Selected items count on SSL: "+ t.ifacesOne.size());
+//        System.out.println("Selected items count on MSL: "+ t.ifaces.size());
+//        System.out.println("Selected items count on SSL: "+ t.ifacesOne.size());
 
         
         final Alert alert = new Alert(AlertType.CONFIRMATION, "Are all elements displayed correctly?", ButtonType.YES, ButtonType.NO);
